@@ -1,0 +1,114 @@
+[
+  {
+    "id": "react-usestate",
+    "stack": "react",
+    "category": "State",
+    "title": "useState",
+    "summary": "컴포넌트 상태를 선언하고, 이전 값을 안전하게 업데이트합니다.",
+    "tags": ["hook", "state", "상태", "counter"],
+    "code": {
+      "js": "import { useState } from 'react';\n\nexport default function Counter() {\n  const [count, setCount] = useState(0);\n\n  const increment = () => {\n    setCount((prev) => prev + 1);\n  };\n\n  return (\n    <button onClick={increment}>\n      Count: {count}\n    </button>\n  );\n}",
+      "ts": "import { useState } from 'react';\n\nexport default function Counter() {\n  const [count, setCount] = useState<number>(0);\n\n  const increment = () => {\n    setCount((prev) => prev + 1);\n  };\n\n  return (\n    <button onClick={increment}>\n      Count: {count}\n    </button>\n  );\n}"
+    },
+    "gotchas": [{"title": "이전 상태가 필요하면 함수형 업데이트", "description": "setCount(count + 1)을 같은 이벤트에서 여러 번 호출하면 같은 값을 참조할 수 있습니다. 이전 상태를 받는 업데이트 함수를 사용하세요."}, {"title": "객체와 배열을 직접 변경하지 않기", "description": "상태의 객체를 직접 수정하지 말고, 새 객체나 배열을 만들어 전달하세요. 업데이트 직후 현재 함수의 상태 변수는 아직 이전 값입니다."}],
+    "docsUrl": "https://react.dev/reference/react/useState"
+  },
+  {
+    "id": "react-useref",
+    "stack": "react",
+    "category": "Refs",
+    "title": "useRef",
+    "summary": "DOM 요소를 참조하고, 버튼 클릭으로 입력창에 포커스를 이동합니다.",
+    "tags": ["hook", "ref", "dom", "focus", "포커스"],
+    "code": {
+      "js": "import { useRef } from 'react';\n\nexport default function SearchInput() {\n  const inputRef = useRef(null);\n\n  return (\n    <div>\n      <input ref={inputRef} aria-label=\"Search\" />\n      <button onClick={() => inputRef.current?.focus()}>\n        Focus input\n      </button>\n    </div>\n  );\n}",
+      "ts": "import { useRef } from 'react';\n\nexport default function SearchInput() {\n  const inputRef = useRef<HTMLInputElement>(null);\n\n  return (\n    <div>\n      <input ref={inputRef} aria-label=\"Search\" />\n      <button onClick={() => inputRef.current?.focus()}>\n        Focus input\n      </button>\n    </div>\n  );\n}"
+    },
+    "gotchas": [{"title": "ref 변경은 리렌더링을 발생시키지 않음", "description": "화면에 표시해야 하는 값은 useState에 저장하세요. DOM ref는 마운트 전이나 언마운트 후 null일 수 있으므로 확인이 필요합니다."}],
+    "docsUrl": "https://react.dev/reference/react/useRef"
+  },
+  {
+    "id": "react-useeffect",
+    "stack": "react",
+    "category": "Effects",
+    "title": "useEffect",
+    "summary": "타이머 같은 외부 시스템을 연결하고, 정리 함수로 해제합니다.",
+    "tags": ["hook", "effect", "cleanup", "timer", "부수효과"],
+    "code": {
+      "js": "import { useEffect, useState } from 'react';\n\nexport default function Timer() {\n  const [seconds, setSeconds] = useState(0);\n\n  useEffect(() => {\n    const id = window.setInterval(() => {\n      setSeconds((prev) => prev + 1);\n    }, 1000);\n\n    return () => window.clearInterval(id);\n  }, []);\n\n  return <p>{seconds}s elapsed</p>;\n}",
+      "ts": "import { useEffect, useState } from 'react';\n\nexport default function Timer() {\n  const [seconds, setSeconds] = useState<number>(0);\n\n  useEffect(() => {\n    const id = window.setInterval(() => {\n      setSeconds((prev) => prev + 1);\n    }, 1000);\n\n    return () => window.clearInterval(id);\n  }, []);\n\n  return <p>{seconds}s elapsed</p>;\n}"
+    },
+    "gotchas": [{"title": "Strict Mode의 개발 환경에서 재실행", "description": "개발 중에는 setup → cleanup → setup이 한 번 더 실행될 수 있습니다. 타이머, 이벤트 리스너, 구독은 반드시 정리하세요."}, {"title": "의존성을 생략해 버그를 숨기지 않기", "description": "Effect에서 사용하는 props와 state는 의존성에 포함해야 합니다. 화면에 필요한 파생 값만 계산한다면 Effect 대신 렌더링 중 계산을 고려하세요."}],
+    "docsUrl": "https://react.dev/reference/react/useEffect"
+  },
+  {
+    "id": "react-usecallback",
+    "stack": "react",
+    "category": "Performance",
+    "title": "useCallback",
+    "summary": "memo 컴포넌트에 전달하는 콜백 참조를 유지합니다.",
+    "tags": ["hook", "callback", "memo", "성능"],
+    "code": {
+      "js": "import { memo, useCallback, useState } from 'react';\n\nconst AddButton = memo(function AddButton({ onAdd }) {\n  return <button onClick={onAdd}>Add</button>;\n});\n\nexport default function Counter() {\n  const [count, setCount] = useState(0);\n  const onAdd = useCallback(() => {\n    setCount((prev) => prev + 1);\n  }, []);\n\n  return <><p>{count}</p><AddButton onAdd={onAdd} /></>;\n}",
+      "ts": "import { memo, useCallback, useState } from 'react';\n\ntype AddButtonProps = { onAdd: () => void };\n\nconst AddButton = memo(function AddButton({ onAdd }: AddButtonProps) {\n  return <button onClick={onAdd}>Add</button>;\n});\n\nexport default function Counter() {\n  const [count, setCount] = useState(0);\n  const onAdd = useCallback(() => {\n    setCount((prev) => prev + 1);\n  }, []);\n\n  return <><p>{count}</p><AddButton onAdd={onAdd} /></>;\n}"
+    },
+    "gotchas": [{"title": "함수 실행 결과를 캐시하는 Hook이 아님", "description": "useCallback은 함수의 참조를 유지합니다. 계산 결과는 useMemo를 사용하세요. 최적화가 필요한지 확인하고, 콜백에서 참조하는 값의 의존성을 빠뜨리지 마세요."}],
+    "docsUrl": "https://react.dev/reference/react/useCallback"
+  },
+  {
+    "id": "react-usememo",
+    "stack": "react",
+    "category": "Performance",
+    "title": "useMemo",
+    "summary": "목록 필터링처럼 비용이 있는 계산 결과를 재사용합니다.",
+    "tags": ["hook", "memo", "filter", "성능"],
+    "code": {
+      "js": "import { useMemo } from 'react';\n\nexport default function ActiveUsers({ users }) {\n  const activeUsers = useMemo(\n    () => users.filter((user) => user.active),\n    [users],\n  );\n\n  return (\n    <ul>\n      {activeUsers.map((user) => <li key={user.id}>{user.name}</li>)}\n    </ul>\n  );\n}",
+      "ts": "import { useMemo } from 'react';\n\ntype User = { id: string; name: string; active: boolean };\n\nexport default function ActiveUsers({ users }: { users: User[] }) {\n  const activeUsers = useMemo(\n    () => users.filter((user) => user.active),\n    [users],\n  );\n\n  return (\n    <ul>\n      {activeUsers.map((user) => <li key={user.id}>{user.name}</li>)}\n    </ul>\n  );\n}"
+    },
+    "gotchas": [{"title": "정확성을 위한 저장소가 아닌 성능 최적화", "description": "계산 함수는 순수하게 유지하세요. React는 캐시를 버릴 수 있습니다. 계산이 저렴하면 메모이제이션 자체가 더 큰 비용일 수 있습니다."}],
+    "docsUrl": "https://react.dev/reference/react/useMemo"
+  },
+  {
+    "id": "react-usereducer",
+    "stack": "react",
+    "category": "State",
+    "title": "useReducer",
+    "summary": "여러 상태 변경을 action과 순수 reducer로 관리합니다.",
+    "tags": ["hook", "reducer", "action", "상태"],
+    "code": {
+      "js": "import { useReducer } from 'react';\n\nfunction reducer(state, action) {\n  switch (action.type) {\n    case 'increment': return { count: state.count + 1 };\n    case 'reset': return { count: 0 };\n    default: return state;\n  }\n}\n\nexport default function Counter() {\n  const [state, dispatch] = useReducer(reducer, { count: 0 });\n  return (\n    <button onClick={() => dispatch({ type: 'increment' })}>\n      {state.count}\n    </button>\n  );\n}",
+      "ts": "import { useReducer } from 'react';\n\ntype State = { count: number };\ntype Action = { type: 'increment' } | { type: 'reset' };\n\nfunction reducer(state: State, action: Action): State {\n  switch (action.type) {\n    case 'increment': return { count: state.count + 1 };\n    case 'reset': return { count: 0 };\n  }\n}\n\nexport default function Counter() {\n  const [state, dispatch] = useReducer(reducer, { count: 0 });\n  return (\n    <button onClick={() => dispatch({ type: 'increment' })}>\n      {state.count}\n    </button>\n  );\n}"
+    },
+    "gotchas": [{"title": "reducer에서 상태를 직접 변경하지 않기", "description": "reducer는 순수 함수여야 합니다. API 호출 같은 부수효과를 넣지 말고 새로운 상태를 반환하세요."}],
+    "docsUrl": "https://react.dev/reference/react/useReducer"
+  },
+  {
+    "id": "react-usecontext",
+    "stack": "react",
+    "category": "State",
+    "title": "useContext",
+    "summary": "Provider를 통해 테마처럼 공통으로 사용하는 값을 전달합니다.",
+    "tags": ["hook", "context", "provider", "theme", "상태"],
+    "code": {
+      "js": "import { createContext, useContext } from 'react';\n\nconst ThemeContext = createContext('light');\n\nfunction ThemeLabel() {\n  const theme = useContext(ThemeContext);\n  return <p>Theme: {theme}</p>;\n}\n\nexport default function App() {\n  return (\n    <ThemeContext.Provider value=\"dark\">\n      <ThemeLabel />\n    </ThemeContext.Provider>\n  );\n}",
+      "ts": "import { createContext, useContext } from 'react';\n\ntype Theme = 'light' | 'dark';\nconst ThemeContext = createContext<Theme>('light');\n\nfunction ThemeLabel() {\n  const theme = useContext(ThemeContext);\n  return <p>Theme: {theme}</p>;\n}\n\nexport default function App() {\n  return (\n    <ThemeContext.Provider value=\"dark\">\n      <ThemeLabel />\n    </ThemeContext.Provider>\n  );\n}"
+    },
+    "gotchas": [{"title": "Provider value 변경은 구독 컴포넌트를 리렌더링", "description": "객체를 value로 전달하면 매 렌더링마다 참조가 달라질 수 있습니다. 필요한 경우 value를 메모이제이션하고, Context의 범위를 작게 유지하세요."}],
+    "docsUrl": "https://react.dev/reference/react/useContext"
+  },
+  {
+    "id": "react-event-handlers",
+    "stack": "react",
+    "category": "Events",
+    "title": "Event handlers",
+    "summary": "입력과 submit 이벤트를 올바른 React 이벤트 타입으로 선언합니다.",
+    "tags": ["event", "form", "change", "input", "이벤트"],
+    "code": {
+      "js": "import { useState } from 'react';\n\nexport default function NameForm() {\n  const [name, setName] = useState('');\n\n  function handleSubmit(event) {\n    event.preventDefault();\n    console.log(name);\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <input aria-label=\"Name\" value={name}\n        onChange={(event) => setName(event.currentTarget.value)} />\n      <button type=\"submit\">Save</button>\n    </form>\n  );\n}",
+      "ts": "import { useState } from 'react';\nimport type { ChangeEvent, SubmitEvent } from 'react';\n\nexport default function NameForm() {\n  const [name, setName] = useState('');\n\n  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {\n    setName(event.currentTarget.value);\n  };\n\n  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {\n    event.preventDefault();\n    console.log(name);\n  };\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <input aria-label=\"Name\" value={name} onChange={handleChange} />\n      <button type=\"submit\">Save</button>\n    </form>\n  );\n}"
+    },
+    "gotchas": [{"title": "currentTarget은 핸들러를 등록한 요소", "description": "타입이 정확한 요소에 접근하려면 currentTarget을 사용하세요. target은 이벤트가 실제 발생한 자식 요소일 수도 있습니다. 이 예제는 React 19.2 타입을 기준으로 합니다."}],
+    "docsUrl": "https://react.dev/learn/typescript"
+  }
+]

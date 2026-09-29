@@ -1,0 +1,46 @@
+{
+  "name": "devsnip",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write src tests vite.config.ts vitest.config.ts index.html README.md docs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "clsx": "^2.1.1",
+    "framer-motion": "^13.4.4",
+    "fuse.js": "^7.5.0",
+    "lucide-react": "^1.48.0",
+    "prismjs": "^1.30.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.7.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^24.13.3",
+    "@types/prismjs": "^1.26.6",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.6.1",
+    "jsdom": "^29.1.1",
+    "oxlint": "^1.81.0",
+    "postcss": "^8.5.28",
+    "prettier": "^3.9.9",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.2"
+  }
+}

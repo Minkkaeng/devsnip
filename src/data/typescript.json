@@ -1,0 +1,61 @@
+[
+  {
+    "id": "ts-generics", "stack": "typescript", "category": "Fundamentals", "title": "Generics",
+    "summary": "입력과 반환 값의 타입 관계를 유지하는 재사용 함수를 만듭니다.",
+    "tags": ["generic", "type", "function", "제네릭"],
+    "code": {"js": "function first(items) {\n  return items[0];\n}\n\nconst name = first(['Ada', 'Linus']);\nconst number = first([1, 2, 3]);\n\nconsole.log(name, number);", "ts": "function first<T>(items: readonly T[]): T | undefined {\n  return items[0];\n}\n\nconst name = first(['Ada', 'Linus']);\n// string | undefined\n\nconst number = first([1, 2, 3]);\n// number | undefined\n\nconsole.log(name, number);"},
+    "gotchas": [{"title": "빈 배열의 결과도 타입에 포함", "description": "배열의 첫 요소는 존재하지 않을 수 있습니다. 반환 타입에 undefined를 포함하거나, 비어 있지 않은 tuple 타입을 사용하세요. JS 버전에는 정적 타입 제약이 없습니다."}],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/2/generics.html"
+  },
+  {
+    "id": "ts-utility-types", "stack": "typescript", "category": "Utility types", "title": "Partial, Pick & Omit",
+    "summary": "기존 타입으로부터 수정용 DTO와 필요한 필드만 가진 타입을 만듭니다.",
+    "tags": ["utility", "partial", "pick", "omit", "dto", "유틸리티"],
+    "code": {"ts": "type User = {\n  id: string;\n  name: string;\n  email: string;\n};\n\n// All fields become optional\ntype UserPatch = Partial<User>;\n\n// Keep only the selected fields\ntype UserPreview = Pick<User, 'id' | 'name'>;\n\n// Remove selected fields\ntype NewUser = Omit<User, 'id'>;\n\nconst patch: UserPatch = { name: 'Ada' };\nconst user: NewUser = { name: 'Ada', email: 'ada@example.com' };\nconsole.log(patch, user);"},
+    "gotchas": [{"title": "타입은 런타임 데이터를 변경하지 않음", "description": "Omit으로 타입에서 필드를 빼더라도 실제 객체의 속성은 남아 있습니다. Partial은 최상위 속성만 optional로 만듭니다."}],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html"
+  },
+  {
+    "id": "ts-record", "stack": "typescript", "category": "Utility types", "title": "Record",
+    "summary": "정해진 키마다 값이 존재하는 타입 안전한 lookup 테이블을 만듭니다.",
+    "tags": ["record", "map", "object", "lookup", "객체"],
+    "code": {"js": "const statusLabels = {\n  idle: 'Ready',\n  loading: 'Loading…',\n  error: 'Try again',\n};\n\nfunction getLabel(status) {\n  return statusLabels[status];\n}\n\nconsole.log(getLabel('loading'));", "ts": "type Status = 'idle' | 'loading' | 'error';\n\nconst statusLabels: Record<Status, string> = {\n  idle: 'Ready',\n  loading: 'Loading…',\n  error: 'Try again',\n};\n\nfunction getLabel(status: Status): string {\n  return statusLabels[status];\n}\n\nconsole.log(getLabel('loading'));"},
+    "gotchas": [{"title": "Record<string, T>는 모든 키의 존재를 보장하지 않음", "description": "유한한 union을 키로 사용하면 필수 키를 검사할 수 있습니다. 임의의 문자열 키라면 없는 값에 대비하거나 noUncheckedIndexedAccess를 활성화하세요."}],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type"
+  },
+  {
+    "id": "ts-discriminated-union", "stack": "typescript", "category": "Fundamentals", "title": "Discriminated unions",
+    "summary": "상태별로 다른 데이터 구조를 공통 kind 필드로 안전하게 좁힙니다.",
+    "tags": ["union", "narrowing", "state", "kind", "분기"],
+    "code": {"js": "function getMessage(result) {\n  switch (result.kind) {\n    case 'success': return result.data;\n    case 'error': return result.message;\n    case 'loading': return 'Loading…';\n    default: throw new Error('Unknown result');\n  }\n}\n\nconsole.log(getMessage({ kind: 'success', data: 'Done' }));", "ts": "type Result =\n  | { kind: 'success'; data: string }\n  | { kind: 'error'; message: string }\n  | { kind: 'loading' };\n\nfunction getMessage(result: Result): string {\n  switch (result.kind) {\n    case 'success': return result.data;\n    case 'error': return result.message;\n    case 'loading': return 'Loading…';\n    default: {\n      const exhaustive: never = result;\n      return exhaustive;\n    }\n  }\n}\n\nconsole.log(getMessage({ kind: 'success', data: 'Done' }));"},
+    "gotchas": [{"title": "공통 필드에는 서로 다른 리터럴 값을 사용", "description": "kind: string 대신 'success' 같은 리터럴 타입을 사용하세요. never 검사로 새 상태가 추가될 때 처리 누락을 발견할 수 있습니다."}],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions"
+  },
+  {
+    "id": "ts-type-guard", "stack": "typescript", "category": "Fundamentals", "title": "Type guards",
+    "summary": "unknown 값을 검증하고 타입 predicate로 안전하게 사용합니다.",
+    "tags": ["guard", "unknown", "predicate", "validation", "검증"],
+    "code": {"js": "function isUser(value) {\n  return typeof value === 'object'\n    && value !== null\n    && 'name' in value\n    && typeof value.name === 'string';\n}\n\nconst input = { name: 'Ada' };\nif (isUser(input)) console.log(input.name);", "ts": "type User = { name: string };\n\nfunction isUser(value: unknown): value is User {\n  return typeof value === 'object'\n    && value !== null\n    && 'name' in value\n    && typeof value.name === 'string';\n}\n\nconst input: unknown = { name: 'Ada' };\nif (isUser(input)) {\n  console.log(input.name);\n}"},
+    "gotchas": [{"title": "predicate는 개발자의 검증 로직을 신뢰", "description": "TypeScript는 guard 구현이 타입의 모든 필드를 실제로 검사하는지 보장하지 않습니다. 타입이 확장되면 guard도 함께 갱신하세요."}],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates"
+  },
+  {
+    "id": "ts-satisfies", "stack": "typescript", "category": "Fundamentals", "title": "satisfies",
+    "summary": "표현식의 추론을 유지하면서 필요한 타입 조건을 검사합니다.",
+    "tags": ["satisfies", "inference", "const", "타입추론"],
+    "code": {"ts": "type Color = 'red' | 'green' | 'blue';\ntype RGB = [number, number, number];\n\nconst palette = {\n  red: [255, 0, 0],\n  green: '#00ff00',\n  blue: [0, 0, 255],\n} satisfies Record<Color, string | RGB>;\n\n// Inferred as string, not string | RGB\nconst green = palette.green.toUpperCase();\nconsole.log(green);"},
+    "gotchas": [{"title": "런타임 검증은 제공하지 않음", "description": "satisfies는 컴파일 시점의 검사입니다. 외부 API 데이터는 별도의 런타임 검증이 필요합니다. as로 타입 오류를 숨기는 대신 사용하세요."}],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator"
+  },
+  {
+    "id": "ts-event-handlers", "stack": "typescript", "category": "Events", "title": "React event types",
+    "summary": "React 입력, 클릭, submit 핸들러에 알맞은 요소 타입을 지정합니다.",
+    "tags": ["event", "react", "handler", "change", "이벤트"],
+    "code": {
+      "js": "export function handleChange(event) {\n  console.log(event.currentTarget.value);\n}\n\nexport function handleClick(event) {\n  console.log(event.currentTarget.name);\n}\n\nexport function handleSubmit(event) {\n  event.preventDefault();\n  const data = new FormData(event.currentTarget);\n  console.log(data.get('name'));\n}",
+      "ts": "import type { ChangeEvent, MouseEvent, SubmitEvent } from 'react';\n\nexport function handleChange(event: ChangeEvent<HTMLInputElement>) {\n  console.log(event.currentTarget.value);\n}\n\nexport function handleClick(event: MouseEvent<HTMLButtonElement>) {\n  console.log(event.currentTarget.name);\n}\n\nexport function handleSubmit(event: SubmitEvent<HTMLFormElement>) {\n  event.preventDefault();\n  const data = new FormData(event.currentTarget);\n  console.log(data.get('name'));\n}"
+    },
+    "gotchas": [{"title": "React 타입과 DOM 타입을 혼동하지 않기", "description": "React 이벤트 핸들러에는 react에서 가져온 이벤트 타입을 사용하세요. SubmitEvent는 React 19.2 타입 기준입니다. DOM addEventListener에서는 브라우저 이벤트 타입을 사용합니다."}],
+    "docsUrl": "https://react.dev/learn/typescript"
+  }
+]
