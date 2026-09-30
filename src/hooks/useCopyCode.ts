@@ -15,7 +15,10 @@ export function useCopyCode() {
   const mounted = useRef(true)
   useEffect(() => {
     mounted.current = true
-    return () => { mounted.current = false; if (timer.current) clearTimeout(timer.current) }
+    return () => {
+      mounted.current = false
+      if (timer.current) clearTimeout(timer.current)
+    }
   }, [])
   const copy = useCallback(async (code: string, label: string) => {
     if (pending.current) return
@@ -28,11 +31,19 @@ export function useCopyCode() {
     } catch {
       result = { kind: 'error', message: '복사하지 못했어요. 코드를 선택한 뒤 직접 복사해 주세요.' }
       if (mounted.current) setCopiedCode(null)
-    } finally { pending.current = false }
+    } finally {
+      pending.current = false
+    }
     if (!mounted.current) return
     if (timer.current) clearTimeout(timer.current)
     setToast({ ...result, id: Date.now() })
-    timer.current = setTimeout(() => { setToast(null); setCopiedCode(null) }, result.kind === 'error' ? 6000 : 2400)
+    timer.current = setTimeout(
+      () => {
+        setToast(null)
+        setCopiedCode(null)
+      },
+      result.kind === 'error' ? 6000 : 2400,
+    )
   }, [])
   return { copy, toast, copiedCode }
 }

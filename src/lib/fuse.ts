@@ -15,13 +15,22 @@ export const searchOptions = {
 
 const indexes = new Map<StackId, Fuse<SnipItem>>()
 for (const stack of ['react', 'typescript', 'javascript'] as const) {
-  indexes.set(stack, new Fuse(snipItems.filter((item) => item.stack === stack), searchOptions))
+  indexes.set(
+    stack,
+    new Fuse(
+      snipItems.filter((item) => item.stack === stack),
+      searchOptions,
+    ),
+  )
 }
 
 export function getVisibleItems(filters: SnipFilters): SnipItem[] {
   const query = filters.searchQuery.trim()
   const results = query
-    ? indexes.get(filters.selectedStack)!.search(query).map(({ item }) => item)
+    ? indexes
+        .get(filters.selectedStack)!
+        .search(query)
+        .map(({ item }) => item)
     : snipItems.filter((item) => item.stack === filters.selectedStack)
 
   return filters.selectedCategory

@@ -1,50 +1,116 @@
 [
   {
-    "id": "js-array-methods", "stack": "javascript", "category": "Arrays", "title": "map, filter & reduce",
+    "id": "js-array-methods",
+    "stack": "javascript",
+    "category": "Arrays",
+    "title": "map, filter & reduce",
     "summary": "원본 배열을 유지하며 변환, 필터링, 합계를 계산합니다.",
     "tags": ["array", "map", "filter", "reduce", "배열"],
-    "code": {"js": "const products = [\n  { name: 'Keyboard', price: 80, inStock: true },\n  { name: 'Mouse', price: 40, inStock: false },\n  { name: 'Monitor', price: 250, inStock: true },\n];\n\nconst available = products.filter((item) => item.inStock);\nconst names = available.map((item) => item.name);\nconst total = available.reduce((sum, item) => sum + item.price, 0);\n\nconsole.log(names, total);", "ts": "type Product = { name: string; price: number; inStock: boolean };\n\nconst products: Product[] = [\n  { name: 'Keyboard', price: 80, inStock: true },\n  { name: 'Mouse', price: 40, inStock: false },\n  { name: 'Monitor', price: 250, inStock: true },\n];\n\nconst available = products.filter((item) => item.inStock);\nconst names = available.map((item) => item.name);\nconst total = available.reduce((sum, item) => sum + item.price, 0);\n\nconsole.log(names, total);"},
-    "gotchas": [{"title": "reduce에는 초기값을 제공", "description": "초기값 없이 빈 배열을 reduce하면 오류가 발생합니다. map과 filter의 새 배열도 내부 객체의 참조는 공유하므로 객체를 직접 수정하지 마세요."}],
+    "code": {
+      "js": "const products = [\n  { name: 'Keyboard', price: 80, inStock: true },\n  { name: 'Mouse', price: 40, inStock: false },\n  { name: 'Monitor', price: 250, inStock: true },\n];\n\nconst available = products.filter((item) => item.inStock);\nconst names = available.map((item) => item.name);\nconst total = available.reduce((sum, item) => sum + item.price, 0);\n\nconsole.log(names, total);",
+      "ts": "type Product = { name: string; price: number; inStock: boolean };\n\nconst products: Product[] = [\n  { name: 'Keyboard', price: 80, inStock: true },\n  { name: 'Mouse', price: 40, inStock: false },\n  { name: 'Monitor', price: 250, inStock: true },\n];\n\nconst available = products.filter((item) => item.inStock);\nconst names = available.map((item) => item.name);\nconst total = available.reduce((sum, item) => sum + item.price, 0);\n\nconsole.log(names, total);"
+    },
+    "gotchas": [
+      {
+        "title": "reduce에는 초기값을 제공",
+        "description": "초기값 없이 빈 배열을 reduce하면 오류가 발생합니다. map과 filter의 새 배열도 내부 객체의 참조는 공유하므로 객체를 직접 수정하지 마세요."
+      }
+    ],
     "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
   },
   {
-    "id": "js-destructuring", "stack": "javascript", "category": "Objects", "title": "Destructuring",
+    "id": "js-destructuring",
+    "stack": "javascript",
+    "category": "Objects",
+    "title": "Destructuring",
     "summary": "객체와 배열에서 값을 추출하고, 기본값과 이름 변경을 적용합니다.",
     "tags": ["destructuring", "spread", "rest", "객체", "구조분해"],
-    "code": {"js": "const user = { id: 1, name: 'Ada', role: undefined };\n\nconst { name: displayName, role = 'developer', ...rest } = user;\nconst [first, ...others] = ['React', 'TypeScript', 'JavaScript'];\n\nconsole.log(displayName, role, rest);\nconsole.log(first, others);", "ts": "type User = { id: number; name: string; role?: string };\nconst user: User = { id: 1, name: 'Ada' };\n\nconst { name: displayName, role = 'developer', ...rest } = user;\nconst [first, ...others] = ['React', 'TypeScript', 'JavaScript'];\n\nconsole.log(displayName, role, rest);\nconsole.log(first, others);"},
-    "gotchas": [{"title": "기본값은 undefined에만 적용", "description": "null에는 구조 분해 기본값이 적용되지 않습니다. null과 undefined 모두 처리하려면 ??를 사용하세요. null 또는 undefined 자체를 구조 분해하면 오류가 납니다."}],
+    "code": {
+      "js": "const user = { id: 1, name: 'Ada', role: undefined };\n\nconst { name: displayName, role = 'developer', ...rest } = user;\nconst [first, ...others] = ['React', 'TypeScript', 'JavaScript'];\n\nconsole.log(displayName, role, rest);\nconsole.log(first, others);",
+      "ts": "type User = { id: number; name: string; role?: string };\nconst user: User = { id: 1, name: 'Ada' };\n\nconst { name: displayName, role = 'developer', ...rest } = user;\nconst [first, ...others] = ['React', 'TypeScript', 'JavaScript'];\n\nconsole.log(displayName, role, rest);\nconsole.log(first, others);"
+    },
+    "gotchas": [
+      {
+        "title": "기본값은 undefined에만 적용",
+        "description": "null에는 구조 분해 기본값이 적용되지 않습니다. null과 undefined 모두 처리하려면 ??를 사용하세요. null 또는 undefined 자체를 구조 분해하면 오류가 납니다."
+      }
+    ],
     "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring"
   },
   {
-    "id": "js-promise-all", "stack": "javascript", "category": "Async", "title": "Promise.all",
+    "id": "js-promise-all",
+    "stack": "javascript",
+    "category": "Async",
+    "title": "Promise.all",
     "summary": "독립적인 비동기 작업을 병렬 실행하고 결과를 순서대로 받습니다.",
     "tags": ["promise", "async", "await", "parallel", "비동기"],
-    "code": {"js": "async function loadDashboard() {\n  const [user, notifications] = await Promise.all([\n    Promise.resolve({ name: 'Ada' }),\n    Promise.resolve(['Build passed']),\n  ]);\n\n  return { user, notifications };\n}\n\nloadDashboard().then(console.log).catch(console.error);", "ts": "type User = { name: string };\n\nasync function loadDashboard() {\n  const [user, notifications] = await Promise.all([\n    Promise.resolve<User>({ name: 'Ada' }),\n    Promise.resolve<string[]>(['Build passed']),\n  ]);\n\n  return { user, notifications };\n}\n\nloadDashboard().then(console.log).catch(console.error);"},
-    "gotchas": [{"title": "하나라도 실패하면 전체 Promise가 reject", "description": "실행 중인 나머지 작업은 자동으로 취소되지 않습니다. 모든 작업의 성공·실패를 각각 확인하려면 Promise.allSettled를 사용하세요. 실제 HTTP 요청은 response.ok도 검사해야 합니다."}],
+    "code": {
+      "js": "async function loadDashboard() {\n  const [user, notifications] = await Promise.all([\n    Promise.resolve({ name: 'Ada' }),\n    Promise.resolve(['Build passed']),\n  ]);\n\n  return { user, notifications };\n}\n\nloadDashboard().then(console.log).catch(console.error);",
+      "ts": "type User = { name: string };\n\nasync function loadDashboard() {\n  const [user, notifications] = await Promise.all([\n    Promise.resolve<User>({ name: 'Ada' }),\n    Promise.resolve<string[]>(['Build passed']),\n  ]);\n\n  return { user, notifications };\n}\n\nloadDashboard().then(console.log).catch(console.error);"
+    },
+    "gotchas": [
+      {
+        "title": "하나라도 실패하면 전체 Promise가 reject",
+        "description": "실행 중인 나머지 작업은 자동으로 취소되지 않습니다. 모든 작업의 성공·실패를 각각 확인하려면 Promise.allSettled를 사용하세요. 실제 HTTP 요청은 response.ok도 검사해야 합니다."
+      }
+    ],
     "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all"
   },
   {
-    "id": "js-optional-chaining", "stack": "javascript", "category": "Objects", "title": "Optional chaining & ??",
+    "id": "js-optional-chaining",
+    "stack": "javascript",
+    "category": "Objects",
+    "title": "Optional chaining & ??",
     "summary": "중첩 속성을 안전하게 읽고, nullish 값에만 기본값을 적용합니다.",
     "tags": ["optional", "nullish", "null", "undefined", "기본값"],
-    "code": {"js": "const settings = {\n  profile: { name: 'Ada' },\n  volume: 0,\n};\n\nconst name = settings.profile?.name ?? 'Guest';\nconst volume = settings.volume ?? 50;\n\nconsole.log(name);\nconsole.log(volume); // 0 is preserved", "ts": "type Settings = {\n  profile?: { name?: string };\n  volume?: number | null;\n};\n\nconst settings: Settings = { profile: { name: 'Ada' }, volume: 0 };\n\nconst name = settings.profile?.name ?? 'Guest';\nconst volume = settings.volume ?? 50;\n\nconsole.log(name);\nconsole.log(volume); // 0 is preserved"},
-    "gotchas": [{"title": "||는 0, false, 빈 문자열도 대체", "description": "??는 null과 undefined만 대체합니다. optional chaining은 선언되지 않은 변수나 함수가 아닌 값의 호출까지 안전하게 만들지는 않습니다."}],
+    "code": {
+      "js": "const settings = {\n  profile: { name: 'Ada' },\n  volume: 0,\n};\n\nconst name = settings.profile?.name ?? 'Guest';\nconst volume = settings.volume ?? 50;\n\nconsole.log(name);\nconsole.log(volume); // 0 is preserved",
+      "ts": "type Settings = {\n  profile?: { name?: string };\n  volume?: number | null;\n};\n\nconst settings: Settings = { profile: { name: 'Ada' }, volume: 0 };\n\nconst name = settings.profile?.name ?? 'Guest';\nconst volume = settings.volume ?? 50;\n\nconsole.log(name);\nconsole.log(volume); // 0 is preserved"
+    },
+    "gotchas": [
+      {
+        "title": "||는 0, false, 빈 문자열도 대체",
+        "description": "??는 null과 undefined만 대체합니다. optional chaining은 선언되지 않은 변수나 함수가 아닌 값의 호출까지 안전하게 만들지는 않습니다."
+      }
+    ],
     "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining"
   },
   {
-    "id": "js-immutable-update", "stack": "javascript", "category": "Arrays", "title": "Immutable updates",
+    "id": "js-immutable-update",
+    "stack": "javascript",
+    "category": "Arrays",
+    "title": "Immutable updates",
     "summary": "map과 spread로 특정 항목만 수정하고 원본 참조를 유지합니다.",
     "tags": ["immutable", "spread", "update", "map", "불변성"],
-    "code": {"js": "const todos = [\n  { id: 1, title: 'Write code', done: false },\n  { id: 2, title: 'Ship it', done: false },\n];\n\nconst nextTodos = todos.map((todo) =>\n  todo.id === 1 ? { ...todo, done: true } : todo,\n);\n\nconsole.log(nextTodos);\nconsole.log(todos[0].done); // false", "ts": "type Todo = { id: number; title: string; done: boolean };\n\nconst todos: Todo[] = [\n  { id: 1, title: 'Write code', done: false },\n  { id: 2, title: 'Ship it', done: false },\n];\n\nconst nextTodos = todos.map((todo) =>\n  todo.id === 1 ? { ...todo, done: true } : todo,\n);\n\nconsole.log(nextTodos);\nconsole.log(todos[0].done); // false"},
-    "gotchas": [{"title": "spread는 얕은 복사", "description": "중첩 객체를 수정할 때는 변경되는 깊이마다 복사해야 합니다. 변경되지 않은 항목의 참조는 그대로 유지하면 메모이제이션에도 도움이 됩니다."}],
+    "code": {
+      "js": "const todos = [\n  { id: 1, title: 'Write code', done: false },\n  { id: 2, title: 'Ship it', done: false },\n];\n\nconst nextTodos = todos.map((todo) =>\n  todo.id === 1 ? { ...todo, done: true } : todo,\n);\n\nconsole.log(nextTodos);\nconsole.log(todos[0].done); // false",
+      "ts": "type Todo = { id: number; title: string; done: boolean };\n\nconst todos: Todo[] = [\n  { id: 1, title: 'Write code', done: false },\n  { id: 2, title: 'Ship it', done: false },\n];\n\nconst nextTodos = todos.map((todo) =>\n  todo.id === 1 ? { ...todo, done: true } : todo,\n);\n\nconsole.log(nextTodos);\nconsole.log(todos[0].done); // false"
+    },
+    "gotchas": [
+      {
+        "title": "spread는 얕은 복사",
+        "description": "중첩 객체를 수정할 때는 변경되는 깊이마다 복사해야 합니다. 변경되지 않은 항목의 참조는 그대로 유지하면 메모이제이션에도 도움이 됩니다."
+      }
+    ],
     "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax"
   },
   {
-    "id": "js-debounce", "stack": "javascript", "category": "Functions", "title": "Debounce",
+    "id": "js-debounce",
+    "stack": "javascript",
+    "category": "Functions",
+    "title": "Debounce",
     "summary": "마지막 호출 후 일정 시간이 지나면 실행되는 함수를 만듭니다.",
     "tags": ["debounce", "timer", "search", "function", "검색"],
-    "code": {"js": "function debounce(callback, delay = 300) {\n  let timer;\n\n  const debounced = (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => callback(...args), delay);\n  };\n\n  debounced.cancel = () => clearTimeout(timer);\n  return debounced;\n}\n\nconst search = debounce((query) => console.log(query));\nsearch('React');\n// Call search.cancel() during cleanup.", "ts": "function debounce<Args extends unknown[]>(\n  callback: (...args: Args) => void,\n  delay = 300,\n) {\n  let timer: ReturnType<typeof setTimeout> | undefined;\n\n  const debounced = (...args: Args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => callback(...args), delay);\n  };\n\n  debounced.cancel = () => clearTimeout(timer);\n  return debounced;\n}\n\nconst search = debounce((query: string) => console.log(query));\nsearch('React');\n// Call search.cancel() during cleanup."},
-    "gotchas": [{"title": "렌더링마다 debounce 함수를 새로 만들지 않기", "description": "React에서는 안정적인 함수 참조를 유지하고 언마운트 시 cancel을 호출하세요. 이 구현은 callback의 this를 전달하지 않고, 비동기 결과를 반환하지 않습니다."}],
+    "code": {
+      "js": "function debounce(callback, delay = 300) {\n  let timer;\n\n  const debounced = (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => callback(...args), delay);\n  };\n\n  debounced.cancel = () => clearTimeout(timer);\n  return debounced;\n}\n\nconst search = debounce((query) => console.log(query));\nsearch('React');\n// Call search.cancel() during cleanup.",
+      "ts": "function debounce<Args extends unknown[]>(\n  callback: (...args: Args) => void,\n  delay = 300,\n) {\n  let timer: ReturnType<typeof setTimeout> | undefined;\n\n  const debounced = (...args: Args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => callback(...args), delay);\n  };\n\n  debounced.cancel = () => clearTimeout(timer);\n  return debounced;\n}\n\nconst search = debounce((query: string) => console.log(query));\nsearch('React');\n// Call search.cancel() during cleanup."
+    },
+    "gotchas": [
+      {
+        "title": "렌더링마다 debounce 함수를 새로 만들지 않기",
+        "description": "React에서는 안정적인 함수 참조를 유지하고 언마운트 시 cancel을 호출하세요. 이 구현은 callback의 this를 전달하지 않고, 비동기 결과를 반환하지 않습니다."
+      }
+    ],
     "docsUrl": "https://developer.mozilla.org/en-US/docs/Glossary/Debounce"
   }
 ]

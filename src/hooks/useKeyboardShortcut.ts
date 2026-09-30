@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 
 interface ShortcutOptions {
@@ -12,11 +12,29 @@ interface ShortcutOptions {
   onEscapeSearch: () => void
 }
 
-export function useKeyboardShortcut({ searchRef, hasSelection, canToggle, onFocusSearch, onNavigate, onToggleTab, onCopy, onEscapeSearch }: ShortcutOptions) {
+export function useKeyboardShortcut({
+  searchRef,
+  hasSelection,
+  canToggle,
+  onFocusSearch,
+  onNavigate,
+  onToggleTab,
+  onCopy,
+  onEscapeSearch,
+}: ShortcutOptions) {
+  const toggledTargetRef = useRef<Element | null>(null)
+
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.isComposing || event.defaultPrevented || document.querySelector('dialog[open]')) return
-      if ((event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === 'k') {
+      if (event.key !== 'Tab' || event.shiftKey) toggledTargetRef.current = null
+      if (event.isComposing || event.defaultPrevented || document.querySelector('dialog[open]'))
+        return
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        !event.altKey &&
+        !event.shiftKey &&
+        event.key.toLowerCase() === 'k'
+      ) {
         event.preventDefault()
         onFocusSearch()
         searchRef.current?.focus()
@@ -33,12 +51,22 @@ export function useKeyboardShortcut({ searchRef, hasSelection, canToggle, onFocu
       if (event.key === 'Escape' && isSearch) {
         event.preventDefault()
         onEscapeSearch()
-      } else if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && hasSelection && !event.shiftKey && !isCode) {
+      } else if (
+        (event.key === 'ArrowUp' || event.key === 'ArrowDown') &&
+        hasSelection &&
+        !event.shiftKey &&
+        !isCode
+      ) {
         event.preventDefault()
         onNavigate(event.key === 'ArrowUp' ? -1 : 1, isList)
       } else if (event.key === 'Tab' && !event.shiftKey && canToggle) {
-        event.preventDefault()
-        onToggleTab()
+        if (toggledTargetRef.current === target) {
+          toggledTargetRef.current = null
+        } else {
+          event.preventDefault()
+          toggledTargetRef.current = target
+          onToggleTab()
+        }
       } else if (event.key === 'Enter' && hasSelection && !event.shiftKey) {
         event.preventDefault()
         onCopy()
@@ -46,5 +74,14 @@ export function useKeyboardShortcut({ searchRef, hasSelection, canToggle, onFocu
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [searchRef, hasSelection, canToggle, onFocusSearch, onNavigate, onToggleTab, onCopy, onEscapeSearch])
+  }, [
+    searchRef,
+    hasSelection,
+    canToggle,
+    onFocusSearch,
+    onNavigate,
+    onToggleTab,
+    onCopy,
+    onEscapeSearch,
+  ])
 }

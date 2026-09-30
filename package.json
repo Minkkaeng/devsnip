@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "format": "prettier --write src tests vite.config.ts vitest.config.ts index.html README.md docs",
+    "format": "node --max-old-space-size=256 node_modules/prettier/bin/prettier.cjs --write src tests vite.config.ts vitest.config.ts index.html README.md docs",
+    "format:check": "node --max-old-space-size=256 node_modules/prettier/bin/prettier.cjs --check src tests vite.config.ts vitest.config.ts index.html README.md docs",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -10,8 +10,14 @@ describe('클립보드', () => {
     expect(writeText).toHaveBeenCalledWith(code)
   })
   it('API 거부 시 fallback을 사용하고 입력 포커스·선택·임시 요소를 복원한다', async () => {
-    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) } })
-    Object.defineProperty(document, 'execCommand', { configurable: true, value: vi.fn().mockReturnValue(true) })
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) },
+    })
+    Object.defineProperty(document, 'execCommand', {
+      configurable: true,
+      value: vi.fn().mockReturnValue(true),
+    })
     const input = document.createElement('input')
     input.value = 'useState'
     document.body.append(input)
@@ -26,7 +32,10 @@ describe('클립보드', () => {
   })
   it('양쪽 복사가 실패하면 성공으로 처리하지 않고 오류를 반환한다', async () => {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined })
-    Object.defineProperty(document, 'execCommand', { configurable: true, value: vi.fn().mockReturnValue(false) })
+    Object.defineProperty(document, 'execCommand', {
+      configurable: true,
+      value: vi.fn().mockReturnValue(false),
+    })
     await expect(copyToClipboard('code')).rejects.toThrow('Clipboard unavailable')
     expect(document.querySelector('textarea')).toBeNull()
   })

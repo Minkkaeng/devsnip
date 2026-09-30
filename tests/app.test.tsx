@@ -5,8 +5,26 @@ import App from '../src/App.tsx'
 import { snipItems } from '../src/data/index.ts'
 import { useSnipStore } from '../src/store/useSnipStore.ts'
 
+it('Tab toggles the code language once, then moves focus on the next press', async () => {
+  const user = userEvent.setup()
+  useSnipStore.getState().setStack('react')
+  useSnipStore.getState().setCodeTab('ts')
+  render(<App />)
+  const input = screen.getByRole('searchbox')
+  input.focus()
+  await user.keyboard('{Tab}')
+  expect(input).toHaveFocus()
+  expect(screen.getByRole('tab', { name: /JavaScript/ })).toHaveAttribute('aria-selected', 'true')
+  await user.keyboard('{Tab}')
+  expect(input).not.toHaveFocus()
+  expect(screen.getByRole('tab', { name: /JavaScript/ })).toHaveAttribute('aria-selected', 'true')
+})
+
 describe('사용자 작업 흐름', () => {
-  beforeEach(() => { useSnipStore.getState().setStack('react'); useSnipStore.getState().setCodeTab('ts') })
+  beforeEach(() => {
+    useSnipStore.getState().setStack('react')
+    useSnipStore.getState().setCodeTab('ts')
+  })
   it('키보드만으로 검색 → 이동 → 언어 전환 → 정확한 코드 복사를 수행한다', async () => {
     const user = userEvent.setup()
     const writeText = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue()
@@ -73,7 +91,10 @@ describe('사용자 작업 흐름', () => {
   it('복사 실패는 오류 토스트로 안내하고 성공 표시를 하지 않는다', async () => {
     const user = userEvent.setup()
     vi.spyOn(navigator.clipboard, 'writeText').mockRejectedValue(new Error('Denied'))
-    Object.defineProperty(document, 'execCommand', { configurable: true, value: vi.fn().mockReturnValue(false) })
+    Object.defineProperty(document, 'execCommand', {
+      configurable: true,
+      value: vi.fn().mockReturnValue(false),
+    })
     render(<App />)
     await user.click(screen.getByRole('button', { name: 'TypeScript 코드 복사' }))
     expect(await screen.findByText(/복사하지 못했어요/)).toBeInTheDocument()

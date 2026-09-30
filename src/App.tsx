@@ -33,15 +33,29 @@ function App() {
     if (searchQuery) setSearchQuery('')
     else searchRef.current?.blur()
   }, [searchQuery, setSearchQuery])
-  const navigate = useCallback((direction: -1 | 1, fromList: boolean) => {
-    moveSelection(direction)
-    if (fromList) {
-      const id = useSnipStore.getState().selectedItemId
-      document.querySelector<HTMLButtonElement>('[data-snip-item="' + id + '"]')?.focus({ preventScroll: true })
-    }
-  }, [moveSelection])
+  const navigate = useCallback(
+    (direction: -1 | 1, fromList: boolean) => {
+      moveSelection(direction)
+      if (fromList) {
+        const id = useSnipStore.getState().selectedItemId
+        document
+          .querySelector<HTMLButtonElement>('[data-snip-item="' + id + '"]')
+          ?.focus({ preventScroll: true })
+      }
+    },
+    [moveSelection],
+  )
 
-  useKeyboardShortcut({ searchRef, hasSelection: !!item, canToggle: !!item?.code.js, onFocusSearch: focusSearch, onNavigate: navigate, onToggleTab: state.toggleCodeTab, onCopy: copySelected, onEscapeSearch: escapeSearch })
+  useKeyboardShortcut({
+    searchRef,
+    hasSelection: !!item,
+    canToggle: !!item?.code.js,
+    onFocusSearch: focusSearch,
+    onNavigate: navigate,
+    onToggleTab: state.toggleCodeTab,
+    onCopy: copySelected,
+    onEscapeSearch: escapeSearch,
+  })
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -55,27 +69,56 @@ function App() {
   useEffect(() => {
     if (previousMobileView.current === state.mobileView) return
     previousMobileView.current = state.mobileView
-    if (!window.matchMedia('(max-width: 900px)').matches || document.activeElement === searchRef.current) return
-    const target = state.mobileView === 'detail' ? '.back-button' : '[data-snip-item][aria-current="true"]'
+    if (
+      !window.matchMedia('(max-width: 900px)').matches ||
+      document.activeElement === searchRef.current
+    )
+      return
+    const target =
+      state.mobileView === 'detail' ? '.back-button' : '[data-snip-item][aria-current="true"]'
     document.querySelector<HTMLButtonElement>(target)?.focus({ preventScroll: true })
   }, [state.mobileView])
 
   return (
     <MotionConfig reducedMotion="user">
       <div className="app-shell">
-        <a className="skip-link" href="#main-content">메인 콘텐츠로 이동</a>
+        <a className="skip-link" href="#main-content">
+          메인 콘텐츠로 이동
+        </a>
         <Header searchRef={searchRef} onOpenMenu={() => setMenuOpen(true)} />
-        <main className="workspace" id="main-content" tabIndex={-1} data-mobile-view={state.mobileView}>
-          <aside className="desktop-sidebar"><StackSidebar /></aside>
+        <main
+          className="workspace"
+          id="main-content"
+          tabIndex={-1}
+          data-mobile-view={state.mobileView}
+        >
+          <aside className="desktop-sidebar">
+            <StackSidebar />
+          </aside>
           <ItemList items={items} selectedId={item?.id ?? null} />
           <DetailView item={item} copiedCode={copiedCode} onCopy={copySelected} />
         </main>
         <footer className="app-footer">
-          <div><Code2 size={14} /><span>Your everyday developer cheat sheet.</span></div>
-          <div id="shortcut-help"><Keyboard size={14} /><span>검색·목록·코드: <kbd>Tab</kbd> 언어 전환 · <kbd>Enter</kbd> 복사 · <kbd>Shift Tab</kbd> 포커스 이동</span></div>
+          <div>
+            <Code2 size={14} />
+            <span>Your everyday developer cheat sheet.</span>
+          </div>
+          <div id="shortcut-help">
+            <Keyboard size={14} />
+            <span>
+              검색·목록·코드: <kbd>Tab</kbd> 언어 전환 · 다시 <kbd>Tab</kbd> 포커스 이동 ·{' '}
+              <kbd>Enter</kbd> 복사
+            </span>
+          </div>
           <span className="footer-version">DEVSNIP / V0.1</span>
         </footer>
-        <dialog className="menu-dialog" ref={dialogRef} aria-label="스택과 카테고리 선택" onCancel={() => setMenuOpen(false)} onClose={() => setMenuOpen(false)}>
+        <dialog
+          className="menu-dialog"
+          ref={dialogRef}
+          aria-label="스택과 카테고리 선택"
+          onCancel={() => setMenuOpen(false)}
+          onClose={() => setMenuOpen(false)}
+        >
           <StackSidebar variant="drawer" onClose={() => setMenuOpen(false)} />
         </dialog>
         <Toast toast={toast} />

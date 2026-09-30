@@ -1,10 +1,16 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }
 :root {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Malgun Gothic',
+    sans-serif;
   color: #e9edf5;
   background: #0c1017;
   font-synthesis: none;
@@ -13,22 +19,82 @@
   color-scheme: dark;
   --color-border: #222a37;
   --color-orange: #ff9b66;
-  --font-code: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-code: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }
-* { box-sizing: border-box; scrollbar-color: #344052 transparent; scrollbar-width: thin; }
-html, body, #root { margin: 0; width: 100%; height: 100%; }
-body { min-width: 320px; }
-button, input { font: inherit; }
-button { cursor: pointer; }
-button:disabled { cursor: not-allowed; }
-a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 2px solid #ff9b66; outline-offset: 3px; }
-::selection { background: #5a4466; color: #fff; }
-::-webkit-scrollbar { width: 5px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #344052; border-radius: 6px; }
-kbd { font: 10px var(--font-code); border: 1px solid #333d4d; background: #1c2430; border-radius: 4px; padding: 2px 5px; white-space: nowrap; color: #aab6c7; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+* {
+  box-sizing: border-box;
+  scrollbar-color: #344052 transparent;
+  scrollbar-width: thin;
+}
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+body {
+  min-width: 320px;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+:focus-visible {
+  outline: 2px solid #ff9b66;
+  outline-offset: 3px;
+}
+::selection {
+  background: #5a4466;
+  color: #fff;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #344052;
+  border-radius: 6px;
+}
+kbd {
+  font: 10px var(--font-code);
+  border: 1px solid #333d4d;
+  background: #1c2430;
+  border-radius: 4px;
+  padding: 2px 5px;
+  white-space: nowrap;
+  color: #aab6c7;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

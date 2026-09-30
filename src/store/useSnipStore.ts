@@ -21,7 +21,12 @@ interface SnipState extends SnipFilters {
 export const useSnipStore = create<SnipState>((set, get) => {
   function updateFilters(filters: SnipFilters, currentId: string | null) {
     const item = getSelectedItem(getVisibleItems(filters), currentId)
-    set({ ...filters, selectedItemId: item?.id ?? null, activeCodeTab: getCodeTab(item, get().activeCodeTab), mobileView: 'list' })
+    set({
+      ...filters,
+      selectedItemId: item?.id ?? null,
+      activeCodeTab: getCodeTab(item, get().activeCodeTab),
+      mobileView: 'list',
+    })
   }
 
   return {
@@ -31,13 +36,19 @@ export const useSnipStore = create<SnipState>((set, get) => {
     selectedItemId: 'react-usestate',
     activeCodeTab: 'ts',
     mobileView: 'list',
-    setStack: (selectedStack) => updateFilters({ selectedStack, selectedCategory: null, searchQuery: '' }, null),
-    setCategory: (selectedCategory) => updateFilters({ ...get(), selectedCategory }, get().selectedItemId),
+    setStack: (selectedStack) =>
+      updateFilters({ selectedStack, selectedCategory: null, searchQuery: '' }, null),
+    setCategory: (selectedCategory) =>
+      updateFilters({ ...get(), selectedCategory }, get().selectedItemId),
     setSearchQuery: (searchQuery) => updateFilters({ ...get(), searchQuery }, get().selectedItemId),
     selectItem: (id, openDetail = false) => {
       const item = getVisibleItems(get()).find((candidate) => candidate.id === id)
       if (!item) return
-      set({ selectedItemId: id, activeCodeTab: getCodeTab(item, get().activeCodeTab), ...(openDetail ? { mobileView: 'detail' as const } : {}) })
+      set({
+        selectedItemId: id,
+        activeCodeTab: getCodeTab(item, get().activeCodeTab),
+        ...(openDetail ? { mobileView: 'detail' as const } : {}),
+      })
     },
     moveSelection: (direction) => {
       const id = getNextItemId(getVisibleItems(get()), get().selectedItemId, direction)
@@ -49,6 +60,7 @@ export const useSnipStore = create<SnipState>((set, get) => {
     },
     toggleCodeTab: () => get().setCodeTab(get().activeCodeTab === 'js' ? 'ts' : 'js'),
     setMobileView: (mobileView) => set({ mobileView }),
-    resetFilters: () => updateFilters({ ...get(), selectedCategory: null, searchQuery: '' }, get().selectedItemId),
+    resetFilters: () =>
+      updateFilters({ ...get(), selectedCategory: null, searchQuery: '' }, get().selectedItemId),
   }
 })
