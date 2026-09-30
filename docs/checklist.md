@@ -57,7 +57,6 @@
 - [x] 정확한 검색·오타·한국어 설명·태그·빈 결과 검사
 - [x] 상태 동기화·이동 경계·TS 전용 항목 검사
 - [x] 검색 → 방향키 → 탭 전환 → 코드 복사 사용자 흐름 검사
-
 - [x] 연속 Tab 언어 전환 후 기본 포커스 이동 회귀 검사
 - [x] 클립보드 성공·거부 fallback·실패·포커스 복원 검사
 - [x] 코드 하이라이팅·IME·메뉴 열기/닫기 검사
@@ -72,15 +71,17 @@
 
 - [x] 한국어 문서 언어, 제목·description·theme-color·기본 OG/Twitter 텍스트 메타 태그
 - [x] DevSnip favicon
+- [x] GitHub 저장소 공개 전 추적 파일·커밋 이력의 민감정보 패턴 점검 및 공개 전환
 - [ ] 공유용 OG PNG 이미지와 og:image 설정
-- [ ] 배포 주소 확정 후 canonical / og:url 추가
-- [ ] Vercel 또는 Cloudflare Pages 배포: 빌드 `npm run build`, 출력 `dist`
-- [ ] 도메인 연결 / HTTPS / 배포 환경 클립보드 확인
+- [x] GitHub Pages 주소에 맞는 Vite base, canonical / og:url 추가
+- [x] GitHub Actions 기반 정적 배포: 포맷·린트·테스트·빌드 후 `dist` 게시
+- [x] 공개 URL의 HTML·JS·CSS·파비콘 HTTPS 응답 확인
+- [ ] 배포 환경의 실제 브라우저 클립보드·키보드 동작 확인
+- [ ] 커스텀 도메인 연결 여부 결정 (기본 github.io 주소로 배포 완료)
 - [ ] 분석 도구 도입 여부 결정
 
 ## 다음 진행 순서
 
-1. 로컬 화면을 열어 데스크톱·모바일 UI 검수
+1. 공개된 GitHub Pages 화면을 데스크톱·모바일 뷰포트에서 시각 검수
 2. 실제 브라우저의 키보드 조작·복사·포커스 QA
-3. 공유 이미지와 배포 도메인 메타 태그 완성
-4. 정적 호스팅 배포 후 HTTPS와 전체 흐름 확인
+3. 필요하면 공유용 OG PNG 이미지 제작과 도메인 연결
