@@ -5,7 +5,15 @@ export function getSelectedItem(items: SnipItem[], selectedId: string | null): S
 }
 
 export function getCodeTab(item: SnipItem | null, preferred: CodeTab): CodeTab {
-  return preferred === 'js' && item?.code.js ? 'js' : 'ts'
+  if (!item) return 'ts'
+  if (item.code[preferred]) return preferred
+  if (item.code.ts) return 'ts'
+  if (item.code.js) return 'js'
+  return 'css'
+}
+
+export function getAvailableCodeTabs(item: SnipItem): CodeTab[] {
+  return (['js', 'ts', 'css'] as const).filter((tab) => !!item.code[tab])
 }
 
 export function getNextItemId(

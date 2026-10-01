@@ -129,5 +129,113 @@
       }
     ],
     "docsUrl": "https://react.dev/learn/typescript"
+  },
+  {
+    "id": "ts-as-const-keyof-typeof",
+    "stack": "typescript",
+    "category": "Inference",
+    "title": "as const, keyof and typeof",
+    "summary": "값에서 리터럴 타입과 키 union을 추출해 타입과 데이터를 함께 유지합니다.",
+    "tags": ["as const", "keyof", "typeof", "literal", "추론"],
+    "code": {
+      "ts": "const routes = {\n  home: '/',\n  profile: '/profile',\n  settings: '/settings',\n} as const;\n\ntype RouteName = keyof typeof routes;\ntype RoutePath = (typeof routes)[RouteName];\n\nfunction navigate(route: RouteName): RoutePath {\n  return routes[route];\n}\n\nconst path = navigate('profile');"
+    },
+    "gotchas": [
+      {
+        "title": "as const는 런타임 freeze가 아님",
+        "description": "as const는 컴파일 시 리터럴 추론과 readonly를 적용합니다. JavaScript 객체를 실제로 불변으로 만들거나 외부 데이터의 모양을 검증하지는 않습니다."
+      }
+    ],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/2/typeof-types.html"
+  },
+  {
+    "id": "ts-unknown-json-validation",
+    "stack": "typescript",
+    "category": "Narrowing",
+    "title": "Validate unknown JSON",
+    "summary": "외부 JSON을 unknown으로 받아 필요한 필드를 확인한 뒤 사용합니다.",
+    "tags": ["unknown", "JSON", "guard", "validation", "API"],
+    "code": {
+      "ts": "type User = { id: string; name: string };\n\nfunction isUser(value: unknown): value is User {\n  return typeof value === 'object'\n    && value !== null\n    && 'id' in value\n    && typeof value.id === 'string'\n    && 'name' in value\n    && typeof value.name === 'string';\n}\n\nfunction parseUser(json: string): User {\n  const value: unknown = JSON.parse(json);\n  if (!isUser(value)) throw new Error('Invalid user payload');\n  return value;\n}\n\nconst user = parseUser('{\"id\":\"u1\",\"name\":\"Ada\"}');\nconsole.log(user.name);"
+    },
+    "gotchas": [
+      {
+        "title": "type predicate는 구현을 자동 검증하지 않음",
+        "description": "검사 함수가 User의 모든 필수 조건을 확인하는지 직접 책임져야 합니다. 중첩·복합 스키마에는 Zod 같은 runtime schema validator를 고려하세요. JSON.parse 자체도 잘못된 JSON에서 예외를 던집니다."
+      }
+    ],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+  },
+  {
+    "id": "ts-type-vs-interface",
+    "stack": "typescript",
+    "category": "Fundamentals",
+    "title": "type vs interface",
+    "summary": "객체 확장과 union 등 각 선언이 잘 맞는 상황을 비교합니다.",
+    "tags": ["type", "interface", "union", "extends", "타입"],
+    "code": {
+      "ts": "interface Entity {\n  id: string;\n}\n\ninterface User extends Entity {\n  name: string;\n}\n\ntype LoadState =\n  | { status: 'loading' }\n  | { status: 'success'; user: User }\n  | { status: 'error'; message: string };\n\nfunction describe(state: LoadState): string {\n  if (state.status === 'success') return state.user.name;\n  if (state.status === 'error') return state.message;\n  return 'Loading…';\n}\n\nconsole.log(describe({ status: 'loading' }));"
+    },
+    "gotchas": [
+      {
+        "title": "둘 중 하나가 항상 더 빠르거나 안전한 것은 아님",
+        "description": "둘 다 객체 모양을 표현하고 확장할 수 있습니다. interface는 선언 병합이 가능하고, type alias는 union·intersection·primitive 조합도 표현할 수 있습니다. 팀 규칙과 필요한 표현력으로 선택하세요."
+      }
+    ],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html"
+  },
+  {
+    "id": "ts-awaited-returntype",
+    "stack": "typescript",
+    "category": "Utility types",
+    "title": "Awaited and ReturnType",
+    "summary": "함수 구현에서 비동기 반환 타입을 추출해 중복 선언을 줄입니다.",
+    "tags": ["Awaited", "ReturnType", "async", "utility", "반환타입"],
+    "code": {
+      "ts": "async function getUser(id: string) {\n  return { id, name: 'Ada' };\n}\n\ntype User = Awaited<ReturnType<typeof getUser>>;\n\nfunction greet(user: User): string {\n  return `Hello, ${user.name}`;\n}\n\nconst user = await getUser('u1');\nconsole.log(greet(user));"
+    },
+    "gotchas": [
+      {
+        "title": "추출한 타입은 runtime 검증이 아님",
+        "description": "Awaited와 ReturnType은 선언된 함수 타입만 조합합니다. API 응답이 선언과 일치하는지는 보장하지 않으므로 외부 입력은 별도로 검증하세요."
+      }
+    ],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#awaitedtype"
+  },
+  {
+    "id": "ts-function-overloads",
+    "stack": "typescript",
+    "category": "Functions",
+    "title": "Function overloads",
+    "summary": "입력 모양에 따라 호출 결과 타입을 다르게 노출합니다.",
+    "tags": ["overload", "function", "signature", "타입"],
+    "code": {
+      "ts": "function format(value: string): string;\nfunction format(value: number, decimals?: number): string;\nfunction format(value: string | number, decimals = 0): string {\n  return typeof value === 'number'\n    ? value.toFixed(decimals)\n    : value.trim();\n}\n\nconst label = format('  ready  ');\nconst price = format(12.5, 2);\nconsole.log(label, price);"
+    },
+    "gotchas": [
+      {
+        "title": "구현 signature는 호출자에게 보이지 않음",
+        "description": "호출 가능한 모든 형태를 overload signature에 선언해야 합니다. overload를 과하게 늘리기보다 union이나 generic으로 충분히 표현되는지 먼저 확인하세요."
+      }
+    ],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads"
+  },
+  {
+    "id": "ts-extract-exclude",
+    "stack": "typescript",
+    "category": "Utility types",
+    "title": "Extract and Exclude",
+    "summary": "discriminated union에서 특정 상태만 골라내거나 제거합니다.",
+    "tags": ["Extract", "Exclude", "union", "utility", "상태"],
+    "code": {
+      "ts": "type Action =\n  | { type: 'save'; id: string }\n  | { type: 'delete'; id: string }\n  | { type: 'reset' };\n\ntype ItemAction = Extract<Action, { id: string }>;\ntype ResetAction = Exclude<Action, { id: string }>;\n\nfunction handleItemAction(action: ItemAction): string {\n  return `${action.type}: ${action.id}`;\n}\n\nconst message = handleItemAction({ type: 'save', id: 'a1' });\nconsole.log(message);"
+    },
+    "gotchas": [
+      {
+        "title": "조건은 각 union member에 분배되어 적용",
+        "description": "Extract와 Exclude는 조건에 맞는 union member를 선택·제거합니다. 객체 필드 일부를 잘라내는 Pick·Omit과는 다른 목적입니다."
+      }
+    ],
+    "docsUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#extracttype-union"
   }
 ]

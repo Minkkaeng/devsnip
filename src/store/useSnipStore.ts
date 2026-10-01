@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import { getVisibleItems } from '../lib/fuse.ts'
-import { getCodeTab, getNextItemId, getSelectedItem } from '../lib/selection.ts'
+import {
+  getAvailableCodeTabs,
+  getCodeTab,
+  getNextItemId,
+  getSelectedItem,
+} from '../lib/selection.ts'
 import type { CodeTab, SnipFilters, StackId } from '../types/snip.ts'
 
 interface SnipState extends SnipFilters {
@@ -58,7 +63,13 @@ export const useSnipStore = create<SnipState>((set, get) => {
       const item = getSelectedItem(getVisibleItems(get()), get().selectedItemId)
       set({ activeCodeTab: getCodeTab(item, tab) })
     },
-    toggleCodeTab: () => get().setCodeTab(get().activeCodeTab === 'js' ? 'ts' : 'js'),
+    toggleCodeTab: () => {
+      const item = getSelectedItem(getVisibleItems(get()), get().selectedItemId)
+      if (!item) return
+      const tabs = getAvailableCodeTabs(item)
+      const currentIndex = tabs.indexOf(get().activeCodeTab)
+      get().setCodeTab(tabs[(currentIndex + 1) % tabs.length])
+    },
     setMobileView: (mobileView) => set({ mobileView }),
     resetFilters: () =>
       updateFilters({ ...get(), selectedCategory: null, searchQuery: '' }, get().selectedItemId),

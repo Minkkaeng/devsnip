@@ -1,23 +1,28 @@
 // @vitest-environment node
 import path from 'node:path'
+import postcss from 'postcss'
 import ts from 'typescript'
 import { expect, it } from 'vitest'
 import { snipItems } from '../src/data/index.ts'
 
-it('모든 TS 스니펫은 strict 타입 검사를 통과하고 JS 스니펫은 구문 오류가 없다', () => {
+it('TS는 strict 타입 검사, JS와 CSS는 구문 검사를 통과한다', () => {
   const files = new Map<string, string>()
   for (const item of snipItems) {
-    const extension = item.stack === 'react' ? 'tsx' : 'ts'
-    files.set(
-      path.resolve('src', `__snippet_${item.id}_ts.${extension}`),
-      item.code.ts + '\nexport {};',
-    )
+    if (item.code.ts) {
+      const extension = item.stack === 'react' ? 'tsx' : 'ts'
+      files.set(
+        path.resolve('src', `__snippet_${item.id}_ts.${extension}`),
+        item.code.ts + '\nexport {};',
+      )
+    }
     if (item.code.js) {
       files.set(
         path.resolve('src', `__snippet_${item.id}_js.${item.stack === 'react' ? 'jsx' : 'js'}`),
         item.code.js + '\nexport {};',
       )
     }
+    if (item.code.css)
+      expect(() => postcss.parse(item.code.css!, { from: `${item.id}.css` })).not.toThrow()
   }
   const options: ts.CompilerOptions = {
     strict: true,

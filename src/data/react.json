@@ -158,5 +158,119 @@
       }
     ],
     "docsUrl": "https://react.dev/learn/typescript"
+  },
+  {
+    "id": "react-list-keys",
+    "stack": "react",
+    "category": "Rendering",
+    "title": "List rendering and keys",
+    "summary": "항목의 안정적인 ID를 key로 사용해 목록 삽입·삭제 시 상태를 보존합니다.",
+    "tags": ["list", "map", "key", "render", "목록"],
+    "code": {
+      "js": "const todos = [\n  { id: 'a1', title: 'Review pull request' },\n  { id: 'b2', title: 'Ship release' },\n];\n\nexport default function TodoList() {\n  return (\n    <ul>\n      {todos.map((todo) => (\n        <li key={todo.id}>{todo.title}</li>\n      ))}\n    </ul>\n  );\n}",
+      "ts": "type Todo = { id: string; title: string };\nconst todos: Todo[] = [\n  { id: 'a1', title: 'Review pull request' },\n  { id: 'b2', title: 'Ship release' },\n];\n\nexport default function TodoList() {\n  return (\n    <ul>\n      {todos.map((todo) => (\n        <li key={todo.id}>{todo.title}</li>\n      ))}\n    </ul>\n  );\n}"
+    },
+    "gotchas": [
+      {
+        "title": "배열 index를 key로 사용하지 않기",
+        "description": "목록 순서가 바뀌거나 항목이 삽입·삭제되면 index key가 다른 항목에 재사용되어 입력값이나 컴포넌트 상태가 엉뚱한 행에 남을 수 있습니다. key는 형제 항목 사이에서 고유하고 안정적이어야 합니다."
+      }
+    ],
+    "docsUrl": "https://react.dev/learn/rendering-lists"
+  },
+  {
+    "id": "react-controlled-uncontrolled-inputs",
+    "stack": "react",
+    "category": "Forms",
+    "title": "Controlled and uncontrolled inputs",
+    "summary": "즉시 반응하는 값은 state로 제어하고, 간단한 제출 값은 FormData로 읽습니다.",
+    "tags": ["form", "input", "controlled", "uncontrolled", "FormData"],
+    "code": {
+      "js": "import { useState } from 'react';\n\nexport default function ProfileForm() {\n  const [email, setEmail] = useState('');\n\n  function handleSubmit(event) {\n    event.preventDefault();\n    const data = new FormData(event.currentTarget);\n    console.log({ email, note: data.get('note') });\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <label>Email <input name=\"email\" value={email} onChange={(event) => setEmail(event.currentTarget.value)} /></label>\n      <label>Note <textarea name=\"note\" defaultValue=\"\" /></label>\n      <button type=\"submit\">Save</button>\n    </form>\n  );\n}",
+      "ts": "import { useState } from 'react';\nimport type { FormEvent } from 'react';\n\nexport default function ProfileForm() {\n  const [email, setEmail] = useState('');\n\n  function handleSubmit(event: FormEvent<HTMLFormElement>) {\n    event.preventDefault();\n    const data = new FormData(event.currentTarget);\n    console.log({ email, note: data.get('note') });\n  }\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <label>Email <input name=\"email\" value={email} onChange={(event) => setEmail(event.currentTarget.value)} /></label>\n      <label>Note <textarea name=\"note\" defaultValue=\"\" /></label>\n      <button type=\"submit\">Save</button>\n    </form>\n  );\n}"
+    },
+    "gotchas": [
+      {
+        "title": "controlled와 uncontrolled 방식을 섞지 않기",
+        "description": "controlled input은 value와 onChange를 함께 두고, uncontrolled input은 defaultValue를 사용합니다. 입력 도중 undefined에서 문자열로 바뀌는 것도 경고 원인이 됩니다."
+      }
+    ],
+    "docsUrl": "https://react.dev/reference/react-dom/components/input"
+  },
+  {
+    "id": "react-use-id",
+    "stack": "react",
+    "category": "Accessibility",
+    "title": "useId for accessible fields",
+    "summary": "label과 입력 요소를 연결하는 안정적인 ID를 생성합니다.",
+    "tags": ["useId", "label", "accessibility", "id", "접근성"],
+    "code": {
+      "js": "import { useId } from 'react';\n\nexport default function EmailField() {\n  const inputId = useId();\n\n  return (\n    <div>\n      <label htmlFor={inputId}>Email address</label>\n      <input id={inputId} type=\"email\" autoComplete=\"email\" />\n    </div>\n  );\n}",
+      "ts": "import { useId } from 'react';\n\nexport default function EmailField() {\n  const inputId = useId();\n\n  return (\n    <div>\n      <label htmlFor={inputId}>Email address</label>\n      <input id={inputId} type=\"email\" autoComplete=\"email\" />\n    </div>\n  );\n}"
+    },
+    "gotchas": [
+      {
+        "title": "목록 key 생성에 useId를 쓰지 않기",
+        "description": "목록 key는 데이터에서 안정적으로 생성해야 합니다. useId는 서버와 클라이언트의 트리를 연결하는 접근성 ID용이며, 데이터 ID나 캐시 키를 대체하지 않습니다."
+      }
+    ],
+    "docsUrl": "https://react.dev/reference/react/useId"
+  },
+  {
+    "id": "react-effect-fetch-abort",
+    "stack": "react",
+    "category": "Effects",
+    "title": "Fetch in an Effect with cleanup",
+    "summary": "요청이 끝나기 전에 컴포넌트가 바뀌면 AbortController로 이전 요청을 취소합니다.",
+    "tags": ["useEffect", "fetch", "abort", "요청"],
+    "code": {
+      "js": "import { useEffect, useState } from 'react';\n\nexport default function UserName({ userId }) {\n  const [name, setName] = useState('Loading…');\n  const [error, setError] = useState('');\n\n  useEffect(() => {\n    const controller = new AbortController();\n\n    async function load() {\n      try {\n        const response = await fetch(`/api/users/${userId}`, { signal: controller.signal });\n        if (!response.ok) throw new Error(`HTTP ${response.status}`);\n        const user = await response.json();\n        setName(user.name);\n      } catch (error) {\n        if (!controller.signal.aborted) setError(error.message);\n      }\n    }\n\n    void load();\n    return () => controller.abort();\n  }, [userId]);\n\n  return error ? <p role=\"alert\">{error}</p> : <p>{name}</p>;\n}",
+      "ts": "import { useEffect, useState } from 'react';\n\ntype User = { name: string };\n\nexport default function UserName({ userId }: { userId: string }) {\n  const [name, setName] = useState('Loading…');\n  const [error, setError] = useState('');\n\n  useEffect(() => {\n    const controller = new AbortController();\n\n    async function load() {\n      try {\n        const response = await fetch(`/api/users/${userId}`, { signal: controller.signal });\n        if (!response.ok) throw new Error(`HTTP ${response.status}`);\n        const user = (await response.json()) as User;\n        setName(user.name);\n      } catch (error) {\n        if (!controller.signal.aborted) {\n          setError(error instanceof Error ? error.message : 'Request failed');\n        }\n      }\n    }\n\n    void load();\n    return () => controller.abort();\n  }, [userId]);\n\n  return error ? <p role=\"alert\">{error}</p> : <p>{name}</p>;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "JSON 응답 타입은 런타임에 검증되지 않음",
+        "description": "TypeScript의 type assertion은 서버 응답의 실제 모양을 확인하지 않습니다. 중요 데이터는 스키마 검증기를 사용하고, 여러 화면이 공유하는 서버 상태에는 query 라이브러리를 고려하세요."
+      }
+    ],
+    "docsUrl": "https://react.dev/reference/react/useEffect"
+  },
+  {
+    "id": "react-use-transition",
+    "stack": "react",
+    "category": "Performance",
+    "title": "useTransition",
+    "summary": "긴 목록을 갱신하는 화면 업데이트를 낮은 우선순위로 표시합니다.",
+    "tags": ["useTransition", "pending", "priority", "render", "성능"],
+    "code": {
+      "js": "import { useState, useTransition } from 'react';\n\nconst allItems = Array.from({ length: 5000 }, (_, index) => `Item ${index + 1}`);\n\nexport default function SearchList() {\n  const [query, setQuery] = useState('');\n  const [items, setItems] = useState(allItems);\n  const [isPending, startTransition] = useTransition();\n\n  function handleChange(value) {\n    setQuery(value);\n    startTransition(() => {\n      setItems(allItems.filter((item) => item.toLowerCase().includes(value.toLowerCase())));\n    });\n  }\n\n  return (\n    <>\n      <input value={query} onChange={(event) => handleChange(event.target.value)} />\n      <p aria-live=\"polite\">{isPending ? 'Updating…' : `${items.length} results`}</p>\n      <ul>{items.slice(0, 20).map((item) => <li key={item}>{item}</li>)}</ul>\n    </>\n  );\n}",
+      "ts": "import { useState, useTransition } from 'react';\n\nconst allItems = Array.from({ length: 5000 }, (_, index) => `Item ${index + 1}`);\n\nexport default function SearchList() {\n  const [query, setQuery] = useState('');\n  const [items, setItems] = useState(allItems);\n  const [isPending, startTransition] = useTransition();\n\n  function handleChange(value: string) {\n    setQuery(value);\n    startTransition(() => {\n      setItems(allItems.filter((item) => item.toLowerCase().includes(value.toLowerCase())));\n    });\n  }\n\n  return (\n    <>\n      <input value={query} onChange={(event) => handleChange(event.currentTarget.value)} />\n      <p aria-live=\"polite\">{isPending ? 'Updating…' : `${items.length} results`}</p>\n      <ul>{items.slice(0, 20).map((item) => <li key={item}>{item}</li>)}</ul>\n    </>\n  );\n}"
+    },
+    "gotchas": [
+      {
+        "title": "입력 state 자체를 transition으로 감싸지 않기",
+        "description": "controlled input 값은 즉시 갱신하고, 느린 화면 업데이트만 startTransition에 넣으세요. transition 작업은 동기 함수여야 하며, 이후 await 뒤의 state 업데이트는 다시 감싸야 합니다."
+      }
+    ],
+    "docsUrl": "https://react.dev/reference/react/useTransition"
+  },
+  {
+    "id": "react-use-deferred-value",
+    "stack": "react",
+    "category": "Performance",
+    "title": "useDeferredValue",
+    "summary": "입력은 즉시 반영하고 느린 결과 목록은 뒤늦게 갱신합니다.",
+    "tags": ["useDeferredValue", "search", "render", "performance", "검색"],
+    "code": {
+      "js": "import { useDeferredValue, useState } from 'react';\n\nconst allItems = ['React', 'TypeScript', 'JavaScript', 'CSS'];\n\nexport default function DeferredSearch() {\n  const [query, setQuery] = useState('');\n  const deferredQuery = useDeferredValue(query);\n  const results = allItems.filter((item) =>\n    item.toLowerCase().includes(deferredQuery.toLowerCase()),\n  );\n  const isStale = query !== deferredQuery;\n\n  return (\n    <>\n      <input value={query} onChange={(event) => setQuery(event.target.value)} />\n      <ul aria-busy={isStale}>\n        {results.map((item) => <li key={item}>{item}</li>)}\n      </ul>\n    </>\n  );\n}",
+      "ts": "import { useDeferredValue, useState } from 'react';\n\nconst allItems = ['React', 'TypeScript', 'JavaScript', 'CSS'];\n\nexport default function DeferredSearch() {\n  const [query, setQuery] = useState('');\n  const deferredQuery = useDeferredValue(query);\n  const results = allItems.filter((item) =>\n    item.toLowerCase().includes(deferredQuery.toLowerCase()),\n  );\n  const isStale = query !== deferredQuery;\n\n  return (\n    <>\n      <input value={query} onChange={(event) => setQuery(event.currentTarget.value)} />\n      <ul aria-busy={isStale}>\n        {results.map((item) => <li key={item}>{item}</li>)}\n      </ul>\n    </>\n  );\n}"
+    },
+    "gotchas": [
+      {
+        "title": "debounce나 메모이제이션을 자동으로 대체하지 않음",
+        "description": "useDeferredValue는 느린 렌더링의 우선순위를 조절할 뿐 요청 횟수를 줄이지 않습니다. 네트워크 호출을 늦추려면 debounce를 별도로 사용하고, memo된 자식이 새 props를 받는지도 확인하세요."
+      }
+    ],
+    "docsUrl": "https://react.dev/reference/react/useDeferredValue"
   }
 ]

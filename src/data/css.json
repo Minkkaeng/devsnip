@@ -1,0 +1,200 @@
+[
+  {
+    "id": "css-flexbox-center",
+    "stack": "css",
+    "category": "Layout",
+    "title": "Flexbox alignment",
+    "summary": "가로·세로 정렬과 요소 간격을 flex 한 곳에서 지정합니다.",
+    "tags": ["flex", "align-items", "justify-content", "gap", "정렬"],
+    "code": {
+      "css": ".toolbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 1rem;\n}\n\n.toolbar-actions {\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "flex 자식의 기본 최소 너비",
+        "description": "긴 텍스트가 레이아웃을 밀어내면 해당 자식에 min-width: 0을 지정하세요. 정렬 축은 flex-direction에 따라 바뀝니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout"
+  },
+  {
+    "id": "css-responsive-grid",
+    "stack": "css",
+    "category": "Layout",
+    "title": "Responsive grid",
+    "summary": "고정 breakpoint 없이 컨테이너 너비에 맞춰 열 수를 조절합니다.",
+    "tags": ["grid", "minmax", "auto-fit", "responsive", "반응형"],
+    "code": {
+      "css": ".card-grid {\n  display: grid;\n  grid-template-columns: repeat(\n    auto-fit,\n    minmax(min(100%, 16rem), 1fr)\n  );\n  gap: 1rem;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "auto-fit과 auto-fill의 차이",
+        "description": "auto-fit은 빈 트랙을 접어 남은 공간을 항목에 나눕니다. auto-fill은 빈 트랙을 유지합니다. 항목 수가 적을 때 원하는 동작으로 고르세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout"
+  },
+  {
+    "id": "css-clamp-fluid-size",
+    "stack": "css",
+    "category": "Values",
+    "title": "Fluid size with clamp()",
+    "summary": "최솟값과 최댓값 사이에서 글자 크기가 부드럽게 변하도록 설정합니다.",
+    "tags": ["clamp", "fluid", "font-size", "responsive", "반응형"],
+    "code": {
+      "css": ".page-title {\n  font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);\n}\n\n.page-shell {\n  width: min(100% - 2rem, 72rem);\n  margin-inline: auto;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "사용자 확대를 막지 않기",
+        "description": "clamp의 최소 크기를 너무 작게 잡지 마세요. 고정 px보다 rem을 기준으로 두고 브라우저 확대와 사용자 글꼴 설정을 확인하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/clamp"
+  },
+  {
+    "id": "css-custom-properties",
+    "stack": "css",
+    "category": "Values",
+    "title": "Custom properties",
+    "summary": "반복되는 색상과 간격 값을 토큰으로 선언해 재사용합니다.",
+    "tags": ["variables", "custom-properties", "color", "spacing", "토큰"],
+    "code": {
+      "css": ":root {\n  --color-accent: #167d72;\n  --color-surface: #f4f7f5;\n  --space-3: 0.75rem;\n  --radius-control: 0.375rem;\n}\n\n.button {\n  color: white;\n  background: var(--color-accent);\n  padding: var(--space-3);\n  border-radius: var(--radius-control);\n}"
+    },
+    "gotchas": [
+      {
+        "title": "선언 위치와 상속 범위",
+        "description": ":root에 선언한 토큰은 문서 전체에 상속됩니다. 컴포넌트 전용 값은 컴포넌트 루트에 선언해 범위를 좁힐 수 있습니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties"
+  },
+  {
+    "id": "css-focus-visible",
+    "stack": "css",
+    "category": "Interaction",
+    "title": ":focus-visible",
+    "summary": "키보드 포커스는 선명하게 표시하고 포인터 클릭의 불필요한 윤곽은 줄입니다.",
+    "tags": ["focus", "focus-visible", "accessibility", "outline", "접근성"],
+    "code": {
+      "css": ".button:focus-visible {\n  outline: 3px solid #167d72;\n  outline-offset: 3px;\n}\n\n.button:focus:not(:focus-visible) {\n  outline: none;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "키보드 포커스 표시를 제거하지 않기",
+        "description": "outline: none만 적용하면 키보드 사용자가 현재 위치를 잃습니다. :focus-visible에는 충분한 대비와 눈에 띄는 대체 표시를 제공하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible"
+  },
+  {
+    "id": "css-text-truncation",
+    "stack": "css",
+    "category": "Typography",
+    "title": "Single and multiline text truncation",
+    "summary": "한 줄과 여러 줄 말줄임을 적용하고 flex 자식의 넘침도 막습니다.",
+    "tags": ["ellipsis", "text-overflow", "line-clamp", "min-width", "말줄임"],
+    "code": {
+      "css": ".single-line {\n  min-width: 0;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.multiline {\n  display: -webkit-box;\n  overflow: hidden;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "말줄임에는 제한된 너비와 overflow가 필요",
+        "description": "flex 또는 grid 자식이 줄어들지 않으면 min-width: 0을 추가하세요. clamp를 쓰는 요소에는 실제 높이와 줄 간격도 확인하고 전체 텍스트를 다른 방식으로 볼 수 있게 하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow"
+  },
+  {
+    "id": "css-z-index-stacking-context",
+    "stack": "css",
+    "category": "Layout",
+    "title": "z-index and stacking contexts",
+    "summary": "겹친 요소의 쌓임 순서를 부모 stacking context 안에서 조정합니다.",
+    "tags": ["z-index", "stacking-context", "position", "overlay", "레이어"],
+    "code": {
+      "css": ".app-shell {\n  position: relative;\n  isolation: isolate;\n}\n\n.page-content {\n  position: relative;\n  z-index: 0;\n}\n\n.dialog-backdrop {\n  position: fixed;\n  inset: 0;\n  z-index: 100;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "자식 z-index는 부모 context 밖으로 나오지 못함",
+        "description": "transform, opacity, filter, isolation 등이 새 stacking context를 만들 수 있습니다. 숫자만 더 크게 올리기 전에 겹치는 두 요소의 가장 가까운 stacking context 부모를 비교하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Stacking_context"
+  },
+  {
+    "id": "css-box-sizing-reset",
+    "stack": "css",
+    "category": "Foundations",
+    "title": "Predictable box sizing",
+    "summary": "padding과 border를 포함한 크기 계산으로 레이아웃을 예측하기 쉽게 합니다.",
+    "tags": ["box-sizing", "border-box", "reset", "layout", "크기"],
+    "code": {
+      "css": "*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n\nhtml {\n  min-width: 320px;\n}\n\nimg,\nsvg,\nvideo {\n  display: block;\n  max-width: 100%;\n}"
+    },
+    "gotchas": [
+      {
+        "title": "border-box는 width 계산만 바꿈",
+        "description": "요소의 padding과 border가 지정한 width 안에 포함됩니다. margin은 포함되지 않으며, 모든 요소에 적용하면 기존 sizing 가정이 달라질 수 있으니 프로젝트 초기 reset에서 사용하는 편이 좋습니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing"
+  },
+  {
+    "id": "css-sticky-sidebar",
+    "stack": "css",
+    "category": "Layout",
+    "title": "Sticky sidebar",
+    "summary": "긴 문서에서 패널을 화면 상단에 유지하되 스크롤 컨테이너를 고려합니다.",
+    "tags": ["position", "sticky", "scroll", "sidebar", "고정"],
+    "code": {
+      "css": ".page-layout {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) 16rem;\n  gap: 2rem;\n  align-items: start;\n}\n\n.sidebar {\n  position: sticky;\n  top: 1rem;\n  max-height: calc(100vh - 2rem);\n  overflow: auto;\n}\n\n@media (max-width: 48rem) {\n  .page-layout {\n    grid-template-columns: 1fr;\n  }\n  .sidebar {\n    position: static;\n    max-height: none;\n  }\n}"
+    },
+    "gotchas": [
+      {
+        "title": "가까운 스크롤 조상이 sticky 기준",
+        "description": "조상에 overflow: auto, hidden, scroll이 있으면 의도치 않은 요소가 스크롤 컨테이너가 될 수 있습니다. sticky 요소의 높이와 부모의 사용 가능한 공간도 확인하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/position"
+  },
+  {
+    "id": "css-container-query",
+    "stack": "css",
+    "category": "Responsive",
+    "title": "Container queries",
+    "summary": "뷰포트가 아닌 컴포넌트가 놓인 컨테이너 너비에 반응합니다.",
+    "tags": ["container", "@container", "responsive", "component", "반응형"],
+    "code": {
+      "css": ".card-list {\n  container-type: inline-size;\n}\n\n.card {\n  display: grid;\n  gap: 1rem;\n}\n\n@container (min-width: 36rem) {\n  .card {\n    grid-template-columns: 8rem 1fr;\n    align-items: center;\n  }\n}"
+    },
+    "gotchas": [
+      {
+        "title": "query 대상의 조상에 container를 선언",
+        "description": "@container 규칙은 container-type을 가진 조상을 기준으로 자식에 적용됩니다. container context를 만든 요소 자체를 같은 query로 스타일링할 수는 없습니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_size_and_style_queries"
+  },
+  {
+    "id": "css-reduced-motion",
+    "stack": "css",
+    "category": "Accessibility",
+    "title": "Respect reduced motion",
+    "summary": "사용자가 동작 줄이기를 요청하면 비필수 애니메이션을 제거합니다.",
+    "tags": ["prefers-reduced-motion", "animation", "accessibility", "motion", "접근성"],
+    "code": {
+      "css": ".panel {\n  transition: transform 180ms ease, opacity 180ms ease;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  *,\n  *::before,\n  *::after {\n    scroll-behavior: auto !important;\n    animation-duration: 0.01ms !important;\n    animation-iteration-count: 1 !important;\n    transition-duration: 0.01ms !important;\n  }\n}"
+    },
+    "gotchas": [
+      {
+        "title": "동작 줄이기는 장식 애니메이션을 우선 조정",
+        "description": "상태 변화를 이해하는 데 필요한 피드백까지 모두 제거하지 않도록 확인하세요. CSS뿐 아니라 JavaScript 애니메이션과 자동 재생 콘텐츠도 함께 고려해야 합니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion"
+  }
+]

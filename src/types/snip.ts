@@ -1,5 +1,5 @@
-export type StackId = 'react' | 'typescript' | 'javascript'
-export type CodeTab = 'js' | 'ts'
+export type StackId = 'react' | 'typescript' | 'javascript' | 'css'
+export type CodeTab = 'js' | 'ts' | 'css'
 
 export interface TechStack {
   id: StackId
@@ -20,7 +20,7 @@ export interface SnipItem {
   title: string
   summary: string
   tags: string[]
-  code: { js?: string; ts: string }
+  code: { js?: string; ts?: string; css?: string }
   gotchas: Gotcha[]
   docsUrl: string
 }

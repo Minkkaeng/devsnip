@@ -73,6 +73,22 @@ describe('사용자 작업 흐름', () => {
     const list = screen.getByRole('group', { name: '스니펫 선택' })
     expect(within(list).queryByRole('button', { name: /Generics/ })).not.toBeInTheDocument()
   })
+  it('CSS 스택에서 CSS를 하이라이트하고 정확히 복사한다', async () => {
+    const user = userEvent.setup()
+    const writeText = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue()
+    render(<App />)
+    await user.click(
+      within(screen.getByRole('navigation', { name: '기술 스택' })).getByRole('button', {
+        name: /CSS/,
+      }),
+    )
+    expect(screen.getByRole('tab', { name: 'CSS' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel').querySelector('code')).toHaveClass('language-css')
+    await user.click(screen.getByRole('button', { name: 'CSS 코드 복사' }))
+    expect(writeText).toHaveBeenCalledWith(
+      snipItems.find((item) => item.id === 'css-flexbox-center')!.code.css,
+    )
+  })
   it('목록의 방향키는 실제 포커스도 이동한다', async () => {
     const user = userEvent.setup()
     render(<App />)

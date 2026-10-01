@@ -112,5 +112,195 @@
       }
     ],
     "docsUrl": "https://developer.mozilla.org/en-US/docs/Glossary/Debounce"
+  },
+  {
+    "id": "js-fetch-json",
+    "stack": "javascript",
+    "category": "Async",
+    "title": "fetch with error handling",
+    "summary": "HTTP 오류 응답을 확인하고 JSON 결과를 안전하게 반환합니다.",
+    "tags": ["fetch", "http", "async", "error", "API", "요청"],
+    "code": {
+      "js": "async function getUser(userId) {\n  const response = await fetch(`/api/users/${userId}`);\n  if (!response.ok) throw new Error(`Request failed: ${response.status}`);\n  return response.json();\n}\n\nconst user = await getUser('42');\nconsole.log(user);",
+      "ts": "type User = { id: string; name: string };\n\nasync function getUser(userId: string): Promise<User> {\n  const response = await fetch(`/api/users/${userId}`);\n  if (!response.ok) throw new Error(`Request failed: ${response.status}`);\n  return response.json() as Promise<User>;\n}\n\nconst user = await getUser('42');\nconsole.log(user.name);"
+    },
+    "gotchas": [
+      {
+        "title": "fetch는 404·500에서 reject되지 않음",
+        "description": "네트워크 오류와 요청 취소는 reject되지만 HTTP 오류 응답은 직접 response.ok를 검사해야 합니다. 응답 본문은 한 번만 읽을 수 있습니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+  },
+  {
+    "id": "js-abort-controller",
+    "stack": "javascript",
+    "category": "Async",
+    "title": "AbortController",
+    "summary": "더 이상 필요하지 않은 fetch 요청을 취소합니다.",
+    "tags": ["abort", "fetch", "request", "cleanup", "취소"],
+    "code": {
+      "js": "async function searchUsers(query, signal) {\n  const params = new URLSearchParams({ q: query });\n  const response = await fetch(`/api/users?${params}`, { signal });\n  if (!response.ok) throw new Error(`Request failed: ${response.status}`);\n  return response.json();\n}\n\nconst controller = new AbortController();\nsearchUsers('Ada', controller.signal).catch((error) => {\n  if (error.name !== 'AbortError') throw error;\n});\ncontroller.abort();",
+      "ts": "type User = { id: string; name: string };\n\nasync function searchUsers(query: string, signal: AbortSignal): Promise<User[]> {\n  const params = new URLSearchParams({ q: query });\n  const response = await fetch(`/api/users?${params}`, { signal });\n  if (!response.ok) throw new Error(`Request failed: ${response.status}`);\n  return response.json() as Promise<User[]>;\n}\n\nconst controller = new AbortController();\nsearchUsers('Ada', controller.signal).catch((error: unknown) => {\n  if (error instanceof DOMException && error.name === 'AbortError') return;\n  throw error;\n});\ncontroller.abort();"
+    },
+    "gotchas": [
+      {
+        "title": "취소도 Promise rejection으로 전달",
+        "description": "AbortError를 네트워크 실패와 구분해 처리하세요. React effect에서는 cleanup에서 controller.abort()를 호출하면 오래된 요청을 정리할 수 있습니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+  },
+  {
+    "id": "js-url-search-params",
+    "stack": "javascript",
+    "category": "Web APIs",
+    "title": "URLSearchParams",
+    "summary": "쿼리 문자열을 인코딩하고 읽기 쉽게 다룹니다.",
+    "tags": ["url", "query", "search", "params", "인코딩"],
+    "code": {
+      "js": "const params = new URLSearchParams({\n  q: 'React hooks',\n  page: '2',\n});\n\nconst url = `/api/search?${params}`;\nconst query = new URLSearchParams('?q=React&page=2');\n\nconsole.log(url);\nconsole.log(query.get('q'), query.get('page'));",
+      "ts": "const params = new URLSearchParams({\n  q: 'React hooks',\n  page: String(2),\n});\n\nconst url = `/api/search?${params}`;\nconst query = new URLSearchParams('?q=React&page=2');\nconst page = Number(query.get('page') ?? 1);\n\nconsole.log(url);\nconsole.log(query.get('q'), page);"
+    },
+    "gotchas": [
+      {
+        "title": "값은 문자열로 직렬화",
+        "description": "배열 값은 쉼표로 합치지 말고 같은 키에 append를 여러 번 호출하세요. get은 첫 값만 반환하고 getAll은 모든 값을 반환합니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams"
+  },
+  {
+    "id": "js-local-storage",
+    "stack": "javascript",
+    "category": "Web APIs",
+    "title": "localStorage",
+    "summary": "작은 문자열 설정을 브라우저 세션 사이에 저장하고 읽습니다.",
+    "tags": ["storage", "localStorage", "persist", "browser", "저장"],
+    "code": {
+      "js": "const storageKey = 'preferred-theme';\n\nlocalStorage.setItem(storageKey, 'dark');\nconst theme = localStorage.getItem(storageKey) ?? 'system';\n\nconsole.log(theme);\n// localStorage.removeItem(storageKey);",
+      "ts": "type Theme = 'light' | 'dark' | 'system';\nconst storageKey = 'preferred-theme';\n\nfunction readTheme(): Theme {\n  const value = localStorage.getItem(storageKey);\n  return value === 'light' || value === 'dark' ? value : 'system';\n}\n\nlocalStorage.setItem(storageKey, 'dark');\nconsole.log(readTheme());\n// localStorage.removeItem(storageKey);"
+    },
+    "gotchas": [
+      {
+        "title": "저장소 값은 항상 문자열이며 실패할 수 있음",
+        "description": "JSON으로 저장하면 읽을 때 파싱과 데이터 검증이 필요합니다. 민감한 정보는 저장하지 말고, 서버 렌더링에서는 window가 있는지 확인하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+  },
+  {
+    "id": "js-array-to-sorted",
+    "stack": "javascript",
+    "category": "Arrays",
+    "title": "Non-mutating array sort",
+    "summary": "원본을 바꾸지 않고 숫자와 문자열 배열을 정렬합니다.",
+    "tags": ["sort", "toSorted", "mutation", "array", "정렬"],
+    "code": {
+      "js": "const scores = [30, 8, 100];\nconst sortedScores = scores.toSorted((a, b) => a - b);\n\nconst users = [{ name: 'Linus' }, { name: 'Ada' }];\nconst sortedUsers = users.toSorted((a, b) =>\n  a.name.localeCompare(b.name),\n);\n\nconsole.log(sortedScores);\nconsole.log(users[0].name); // Linus: original array is unchanged",
+      "ts": "type User = { name: string };\nconst scores = [30, 8, 100];\nconst sortedScores = scores.toSorted((a, b) => a - b);\n\nconst users: User[] = [{ name: 'Linus' }, { name: 'Ada' }];\nconst sortedUsers = users.toSorted((a, b) =>\n  a.name.localeCompare(b.name),\n);\n\nconsole.log(sortedScores);\nconsole.log(sortedUsers[0].name);\nconsole.log(users[0].name); // original array is unchanged"
+    },
+    "gotchas": [
+      {
+        "title": "비교 함수를 생략하면 문자열처럼 정렬",
+        "description": "숫자는 (a, b) => a - b처럼 비교 함수를 제공하세요. toSorted는 최신 브라우저 기능이므로 지원 범위가 낮으면 [...items].sort(compareFn)을 사용하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted"
+  },
+  {
+    "id": "js-set-deduplicate",
+    "stack": "javascript",
+    "category": "Collections",
+    "title": "Deduplicate with Set and Map",
+    "summary": "원시값은 Set으로, 객체 목록은 기준 key를 골라 중복을 제거합니다.",
+    "tags": ["Set", "Map", "unique", "deduplicate", "중복제거"],
+    "code": {
+      "js": "const tags = ['react', 'css', 'react'];\nconst uniqueTags = [...new Set(tags)];\n\nconst users = [\n  { id: 'u1', name: 'Ada' },\n  { id: 'u2', name: 'Linus' },\n  { id: 'u1', name: 'Ada' },\n];\nconst uniqueUsers = [...new Map(users.map((user) => [user.id, user])).values()];\n\nconsole.log(uniqueTags, uniqueUsers);",
+      "ts": "type User = { id: string; name: string };\nconst tags = ['react', 'css', 'react'];\nconst uniqueTags = [...new Set(tags)];\n\nconst users: User[] = [\n  { id: 'u1', name: 'Ada' },\n  { id: 'u2', name: 'Linus' },\n  { id: 'u1', name: 'Ada' },\n];\nconst uniqueUsers = [...new Map(users.map((user) => [user.id, user])).values()];\n\nconsole.log(uniqueTags, uniqueUsers);"
+    },
+    "gotchas": [
+      {
+        "title": "Set은 객체 내용을 비교하지 않고 참조를 비교",
+        "description": "내용이 같은 별도 객체는 Set에서 중복으로 취급되지 않습니다. 객체 배열은 어떤 필드로 같은 항목을 판별할지 정하고 Map key로 사용하세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"
+  },
+  {
+    "id": "js-intl-formatting",
+    "stack": "javascript",
+    "category": "Formatting",
+    "title": "Intl number and date formatting",
+    "summary": "통화와 날짜를 locale 규칙에 맞춰 표시합니다.",
+    "tags": ["Intl", "NumberFormat", "DateTimeFormat", "locale", "통화"],
+    "code": {
+      "js": "const price = new Intl.NumberFormat('ko-KR', {\n  style: 'currency',\n  currency: 'KRW',\n}).format(12500);\n\nconst date = new Intl.DateTimeFormat('ko-KR', {\n  dateStyle: 'medium',\n  timeZone: 'Asia/Seoul',\n}).format(new Date('2026-10-01T03:00:00Z'));\n\nconsole.log(price, date);",
+      "ts": "const price = new Intl.NumberFormat('ko-KR', {\n  style: 'currency',\n  currency: 'KRW',\n}).format(12500);\n\nconst date = new Intl.DateTimeFormat('ko-KR', {\n  dateStyle: 'medium',\n  timeZone: 'Asia/Seoul',\n}).format(new Date('2026-10-01T03:00:00Z'));\n\nconsole.log(price, date);"
+    },
+    "gotchas": [
+      {
+        "title": "서버와 사용자 환경의 locale·timezone은 다를 수 있음",
+        "description": "재현 가능한 표시가 필요하면 locale과 timeZone을 명시하세요. 날짜 전용 값과 시각을 나타내는 timestamp는 의미가 다르므로 같은 방식으로 파싱하지 마세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl"
+  },
+  {
+    "id": "js-promise-all-settled",
+    "stack": "javascript",
+    "category": "Async",
+    "title": "Promise.allSettled",
+    "summary": "독립 요청을 모두 기다리고 각 작업의 성공·실패를 따로 처리합니다.",
+    "tags": ["Promise", "allSettled", "parallel", "error", "비동기"],
+    "code": {
+      "js": "const results = await Promise.allSettled([\n  fetch('/api/profile'),\n  fetch('/api/notifications'),\n]);\n\nfor (const result of results) {\n  if (result.status === 'fulfilled') {\n    console.log('Request finished', result.value.status);\n  } else {\n    console.error('Request failed', result.reason);\n  }\n}",
+      "ts": "const results = await Promise.allSettled([\n  fetch('/api/profile'),\n  fetch('/api/notifications'),\n]);\n\nfor (const result of results) {\n  if (result.status === 'fulfilled') {\n    console.log('Request finished', result.value.status);\n  } else {\n    console.error('Request failed', result.reason);\n  }\n}"
+    },
+    "gotchas": [
+      {
+        "title": "HTTP 오류 응답은 fulfilled 결과일 수 있음",
+        "description": "fetch는 404나 500만으로 reject하지 않습니다. 각 response.ok를 확인해야 하며, allSettled는 어느 요청도 취소하지 않습니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled"
+  },
+  {
+    "id": "js-date-only-vs-instant",
+    "stack": "javascript",
+    "category": "Dates",
+    "title": "Date-only values and instants",
+    "summary": "달력 날짜와 UTC 시각을 구분해 timezone 변환 오류를 피합니다.",
+    "tags": ["Date", "UTC", "timezone", "ISO", "날짜"],
+    "code": {
+      "js": "const dateOnly = '2026-10-01';\nconst [year, month, day] = dateOnly.split('-').map(Number);\nconst localCalendarDate = new Date(year, month - 1, day);\n\nconst instant = new Date('2026-10-01T03:00:00Z');\nconsole.log(localCalendarDate.getFullYear(), localCalendarDate.getMonth() + 1);\nconsole.log(instant.toISOString());",
+      "ts": "const dateOnly = '2026-10-01';\nconst [year, month, day] = dateOnly.split('-').map(Number);\nconst localCalendarDate = new Date(year, month - 1, day);\n\nconst instant = new Date('2026-10-01T03:00:00Z');\nconsole.log(localCalendarDate.getFullYear(), localCalendarDate.getMonth() + 1);\nconsole.log(instant.toISOString());"
+    },
+    "gotchas": [
+      {
+        "title": "YYYY-MM-DD 파싱은 UTC로 해석될 수 있음",
+        "description": "날짜 전용 문자열을 Date로 바로 파싱하면 지역에 따라 전날로 표시될 수 있습니다. 생일·예약일 같은 달력 날짜는 date-only로 보관하고, 실제 시각은 timezone이 포함된 instant로 다루세요."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date"
+  },
+  {
+    "id": "js-map-vs-object",
+    "stack": "javascript",
+    "category": "Collections",
+    "title": "Map for keyed collections",
+    "summary": "동적으로 추가·삭제하는 key-value 데이터는 Map으로 관리합니다.",
+    "tags": ["Map", "Object", "collection", "lookup", "자료구조"],
+    "code": {
+      "js": "const visits = new Map();\nvisits.set('home', 12);\nvisits.set('docs', 7);\nvisits.set('home', visits.get('home') + 1);\n\nfor (const [path, count] of visits) {\n  console.log(path, count);\n}\n\nconsole.log(visits.size);",
+      "ts": "const visits = new Map<string, number>();\nvisits.set('home', 12);\nvisits.set('docs', 7);\nvisits.set('home', visits.get('home')! + 1);\n\nfor (const [path, count] of visits) {\n  console.log(path, count);\n}\n\nconsole.log(visits.size);"
+    },
+    "gotchas": [
+      {
+        "title": "고정된 레코드와 동적 Map은 목적이 다름",
+        "description": "일반 객체는 JSON 직렬화와 정적 필드에 편하고, Map은 임의 key·size·순회·빈번한 추가 삭제에 적합합니다. Map은 JSON.stringify로 바로 직렬화되지 않습니다."
+      }
+    ],
+    "docsUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
   }
 ]

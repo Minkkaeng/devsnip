@@ -11,9 +11,10 @@ describe('스니펫 데이터와 검색', () => {
   it('고유 ID와 필수 필드, 공식 문서 주소를 갖는다', () => {
     expect(new Set(snipItems.map((item) => item.id)).size).toBe(snipItems.length)
     for (const item of snipItems) {
-      expect(['react', 'typescript', 'javascript']).toContain(item.stack)
-      for (const field of [item.id, item.category, item.title, item.summary, item.code.ts])
+      expect(['react', 'typescript', 'javascript', 'css']).toContain(item.stack)
+      for (const field of [item.id, item.category, item.title, item.summary])
         expect(field.trim().length).toBeGreaterThan(0)
+      expect([item.code.js, item.code.ts, item.code.css].some((code) => !!code?.trim())).toBe(true)
       expect(item.tags.length).toBeGreaterThan(0)
       expect(item.gotchas.length).toBeGreaterThan(0)
       for (const gotcha of item.gotchas) {

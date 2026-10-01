@@ -25,7 +25,7 @@
 - [x] Header / StackSidebar / ItemList / DetailView 통합
 - [x] Fuse.js 검색: threshold 0.35, 위치 제한 해제, 제목 우선 가중치
 - [x] 필터 변경 후 선택 동기화 및 검색 결과 없음 상태
-- [x] JS ↔ TS 전환 및 원클릭 복사
+- [x] 스니펫별 제공 언어(JS / TS / CSS) 탭 전환 및 원클릭 복사
 - [x] Clipboard API + fallback + 실패 안내
 - [x] Gotcha 아코디언과 공식 문서 링크
 - [x] Ctrl+K / ⌘K 검색 포커스
@@ -33,13 +33,15 @@
 - [x] 검색·목록·코드의 첫 Tab 언어 전환, 연속 두 번째 Tab 기본 포커스 이동, Enter 복사
 - [x] Shift+Tab 기본 포커스 이동, 검색의 Escape 초기화
 - [x] 한글 IME 조합 중 단축키 오작동 방지
-- [x] React 데이터 8개: 상태·ref·effect·callback·memo·reducer·context·이벤트
-- [x] TypeScript 데이터 7개: Generic·Utility Types·Record·Union·Guard·satisfies·Event types
-- [x] JavaScript 데이터 6개: 배열·구조 분해·Promise·optional chaining·불변 업데이트·debounce
+- [x] React 데이터 14개: 기존 Hook·이벤트 + 목록 key·폼·useId·요청 취소·transition·deferred value
+- [x] TypeScript 데이터 13개: 기존 타입 패턴 + as const·unknown 검증·type/interface·overload·utility types
+- [x] JavaScript 데이터 16개: 기존 기본기·Web API + 비변경 정렬·중복 제거·Intl·allSettled·Date·Map
+- [x] CSS 스택과 데이터 11개: 기존 레이아웃·값 + 말줄임·z-index·box sizing·sticky·container query·reduced motion
 
 ## Phase 4. UI/UX 구현
 
-- [x] Prism 기반 JS / TS / JSX / TSX 하이라이팅과 줄 번호
+- [x] Prism 기반 JS / TS / JSX / TSX / CSS 하이라이팅과 줄 번호
+- [x] 항목별 제공 언어 탭과 CSS 스택 전용 복사
 - [x] React 텍스트 노드로 토큰 렌더링: 스니펫 HTML 실행 방지
 - [x] 선택 인디케이터, 코드 탭 인디케이터, 복사 토스트 애니메이션
 - [x] 사용자 reduced-motion 설정 대응
@@ -60,7 +62,7 @@
 - [x] 연속 Tab 언어 전환 후 기본 포커스 이동 회귀 검사
 - [x] 클립보드 성공·거부 fallback·실패·포커스 복원 검사
 - [x] 코드 하이라이팅·IME·메뉴 열기/닫기 검사
-- [x] 모든 TS 예제 strict 타입 검사 / JS 예제 구문 검사
+- [x] TS strict 타입 검사 / JS 구문 검사 / CSS 구문 검사
 - [ ] Chrome / Safari / Firefox 실제 클립보드 및 키보드 동작 확인
 - [ ] 1440px / 1024px / 768px / 390px / 320px 뷰포트 검수
 - [ ] iOS Safari / Android Chrome 실기기 확인

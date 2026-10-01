@@ -9,7 +9,7 @@ import { Toast } from './components/Toast.tsx'
 import { useCopyCode } from './hooks/useCopyCode.ts'
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut.ts'
 import { getVisibleItems } from './lib/fuse.ts'
-import { getCodeTab, getSelectedItem } from './lib/selection.ts'
+import { getAvailableCodeTabs, getCodeTab, getSelectedItem } from './lib/selection.ts'
 import { useSnipStore } from './store/useSnipStore.ts'
 import './App.css'
 
@@ -49,7 +49,7 @@ function App() {
   useKeyboardShortcut({
     searchRef,
     hasSelection: !!item,
-    canToggle: !!item?.code.js,
+    canToggle: !!item && getAvailableCodeTabs(item).length > 1,
     onFocusSearch: focusSearch,
     onNavigate: navigate,
     onToggleTab: state.toggleCodeTab,

@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { techStacks } from '../data/index.ts'
-import { getCodeTab } from '../lib/selection.ts'
+import { getAvailableCodeTabs, getCodeTab } from '../lib/selection.ts'
 import { useSnipStore } from '../store/useSnipStore.ts'
 import type { CodeTab, SnipItem } from '../types/snip.ts'
 import { CodeBlock } from './CodeBlock.tsx'
@@ -45,13 +45,20 @@ export function DetailView({
   const code = item.code[tab]!
   const copied = copiedCode === code
   const language =
-    item.stack === 'react'
-      ? tab === 'js'
-        ? 'jsx'
-        : 'tsx'
-      : tab === 'js'
-        ? 'javascript'
-        : 'typescript'
+    tab === 'css'
+      ? 'css'
+      : item.stack === 'react'
+        ? `${tab}x`
+        : tab === 'js'
+          ? 'javascript'
+          : 'typescript'
+  const availableTabs = getAvailableCodeTabs(item)
+  const tabOptions: readonly CodeTab[] = item.code.css ? ['css'] : ['js', 'ts']
+  const codeTabLabels: Record<CodeTab, string> = {
+    js: 'JavaScript',
+    ts: 'TypeScript',
+    css: 'CSS',
+  }
   const filename = `${item.title === 'useState' ? 'Counter' : item.title.replace(/[^a-zA-Z0-9]/g, '') || 'snippet'}.${language === 'jsx' || language === 'tsx' ? language : tab}`
   return (
     <section className="detail-panel" aria-label="스니펫 상세">
@@ -92,7 +99,7 @@ export function DetailView({
         <div className="code-window">
           <div className="code-toolbar">
             <div className="code-tabs" role="tablist" aria-label="코드 언어">
-              {(['js', 'ts'] as const).map((codeTab) => (
+              {tabOptions.map((codeTab) => (
                 <button
                   key={codeTab}
                   role="tab"
@@ -100,7 +107,7 @@ export function DetailView({
                   aria-selected={tab === codeTab}
                   aria-controls="snippet-code-panel"
                   tabIndex={tab === codeTab ? 0 : -1}
-                  disabled={codeTab === 'js' && !item.code.js}
+                  disabled={!item.code[codeTab]}
                   title={
                     codeTab === 'js' && !item.code.js
                       ? 'TypeScript 전용 타입 선언입니다'
@@ -112,21 +119,24 @@ export function DetailView({
                       event.preventDefault()
                       activateTab(
                         event.key === 'Home'
-                          ? item.code.js
-                            ? 'js'
-                            : 'ts'
+                          ? availableTabs[0]
                           : event.key === 'End'
-                            ? 'ts'
-                            : tab === 'ts' && item.code.js
-                              ? 'js'
-                              : 'ts',
+                            ? availableTabs.at(-1)!
+                            : availableTabs[
+                                (availableTabs.indexOf(tab) +
+                                  (event.key === 'ArrowRight' ? 1 : -1) +
+                                  availableTabs.length) %
+                                  availableTabs.length
+                              ],
                       )
                     }
                   }}
                   className={`code-tab ${tab === codeTab ? 'is-active' : ''}`}
                 >
-                  <span className={`language-badge ${codeTab}`}>{codeTab.toUpperCase()}</span>
-                  <span>{codeTab === 'js' ? 'JavaScript' : 'TypeScript'}</span>
+                  <span className={`language-badge ${codeTab}`} aria-hidden="true">
+                    {codeTab.toUpperCase()}
+                  </span>
+                  <span>{codeTabLabels[codeTab]}</span>
                   {tab === codeTab && (
                     <motion.span
                       className="tab-indicator"
@@ -140,7 +150,7 @@ export function DetailView({
             <button
               className={`copy-button ${copied ? 'is-copied' : ''}`}
               onClick={onCopy}
-              aria-label={`${tab === 'js' ? 'JavaScript' : 'TypeScript'} 코드 복사`}
+              aria-label={`${codeTabLabels[tab]} 코드 복사`}
             >
               {copied ? <Check size={15} /> : <Copy size={15} />}
               <span>{copied ? '복사 완료' : '코드 복사'}</span>
@@ -165,7 +175,7 @@ export function DetailView({
           <div className="code-bottom">
             <span>
               <span className="status-dot" />
-              {item.code.js ? 'Ready to copy' : 'TypeScript 전용 타입 선언'}
+              Ready to copy
             </span>
             <span>UTF-8</span>
           </div>

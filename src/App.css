@@ -192,6 +192,11 @@
   color: #f0d17d;
   background: #383124;
 }
+.stack-symbol.css {
+  color: #c5a8ff;
+  background: #302842;
+  font-size: 9px;
+}
 .stack-text {
   display: flex;
   flex-direction: column;
@@ -498,6 +503,9 @@
 }
 .stack-dot.javascript {
   background: #e7c779;
+}
+.stack-dot.css {
+  background: #b69af1;
 }
 .detail-title-row {
   display: flex;
